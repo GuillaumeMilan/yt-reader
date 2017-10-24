@@ -8,10 +8,10 @@ is designed for low performance tools.
 
 # Version and Content
 
-Version | Expected content
---- | ---
-Pre Alpha | Manually write link in the code
-Alpha | Player available
-Pre Beta | Youtube navigator available
-Beta | Introdution of playlist 
-Realease | Audio player and navigator fully available
+Version | Expected content | Expected Date
+--- | --- | --- 
+Pre Alpha | Manually write link in the code | Oct. 25 2017
+Alpha | Player available | Nov. 1 2017
+Pre Beta | Youtube navigator available | Nov. 15 2017
+Beta | Introdution of playlist  | Nov. 25 2017
+Realease | Audio player and navigator fully available | Dec. 24 2017
