@@ -21,8 +21,6 @@ class VideoPlayer(Thread):
         self.__end_date = 0.0
 #define if the player has currently a video in memory
         self.__is_reading = False
-#define if the player is asked to stop the current stream
-        self.__exited_stream = False
 #define the instance of vlc
         self.__instance = vlc.Instance()
 #define the player of the class 
@@ -57,6 +55,8 @@ class VideoPlayer(Thread):
         self.__url = url
         self.__video = pafy.new(self.__url)
         self.__parse_video()
+    def is_paused(self): 
+	return self.__paused
 
     def pause_stream(self):
         self.__remaining_time = self.__end_date - time.time()
@@ -72,7 +72,8 @@ class VideoPlayer(Thread):
         return self.__is_reading
 
     def stop_stream(self): 
-        self.__exited_stream = True
+        self.__is_alive = False
+	self.__player.stop()
     
     def play_stream(self): 
         self.__parse_video()
