@@ -8,7 +8,8 @@ is designed for low performance tools.
 
 # Version and Features
 __Current version of the project: Alpha 0.1__ 
-In the current version the player is available in command line
+In the current version the player is available in command line.
+
 Version | Expected content | Expected Date
 --- | --- | --- 
 Pre Alpha | Manually write link in the code | Oct. 25 2017
