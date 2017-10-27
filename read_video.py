@@ -7,26 +7,16 @@ class VideoPlayer(Thread):
     """ This class will create a thread in which the sound and the video will
         be played
     """
-    def __init__(self,video = None, quality = '', output = '', paused = False): 
+    def __init__(self, video = None, quality = '', output = '', debug = False): 
         Thread.__init__(self)
 #define the url of the current video
         self.__url = ""
 #define the pafy video stream the player will use 
         self.__video = video
-#define if the player status is paused 
-        self.__paused = paused
-#define the time remaining to play (to set the date correctly after pause)
-        self.__remaining_time = 0.0
-#define the date at which the stream will end for this video
-        self.__end_date = 0.0
-#define if the player has currently a video in memory
-        self.__is_reading = False
 #define the instance of vlc
         self.__instance = vlc.Instance()
 #define the player of the class 
         self.__player = self.__instance.media_player_new()
-#define the pafy getted stream
-        self.__video = video
 #define the quality of the stream to get 
         self.__quality = quality
 #define if the stream shoud be played as video or audio
@@ -35,7 +25,11 @@ class VideoPlayer(Thread):
         self.__is_alive = True
 #define kill the player when the next video end
         self.__kill_at_end = False
-        
+#define if the player is used with an interface 
+	self.__interface = None
+#define if the player is runnning in debug mode 
+	self.__debug = debug
+
     def set_quality(self,quality): 
         self.__quality = quality
     
@@ -56,20 +50,21 @@ class VideoPlayer(Thread):
         self.__video = pafy.new(self.__url)
         self.__parse_video()
     def is_paused(self): 
-	return self.__paused
+	return self.__player.get_state()== vlc.State.Paused
+
+    def is_running(self):
+	return not (self.__player.get_state() == vlc.State.NothingSpecial or self.__player.get_state() == vlc.State.Stopped)
 
     def pause_stream(self):
-        self.__remaining_time = self.__end_date - time.time()
-        self.__paused = True
         self.__player.pause()
 
     def resume_stream(self): 
-        self.__end_date = time.time() + self.__remaining_time
-        self.__paused = False
         self.__player.play()
-        
+    def set_time(self, time):
+	self.__player.set_time(time)
+
     def is_playing(self): 
-        return self.__is_reading
+        return self.__player.get_state() == vlc.State.Playing
 
     def stop_stream(self): 
         self.__is_alive = False
@@ -78,7 +73,11 @@ class VideoPlayer(Thread):
     def play_stream(self): 
         self.__parse_video()
         self.__start_stream()
-
+    def set_interface(self,interface):
+	""" 
+	    interface must only have a method called set_next_music(self)
+	"""
+	self.__interface = interface
     def __parse_video(self): 
         url = ""
         if self.__video == None :
@@ -105,17 +104,26 @@ class VideoPlayer(Thread):
         self.__player.set_mrl(url)
 
     def __start_stream(self):
-        self.__is_reading = True
         self.__player.play()
-        self.__end_date = time.time() + self.__video.length
     
     def run(self):
         while self.__is_alive:
-            if self.__is_reading: 
-                if self.__end_date < time.time() and not self.__paused: 
-                    self.__is_reading = False
-                    if self.__kill_at_end: 
-                        #self.__instance
-                        return
-            time.sleep(0.5)
+	    if self.__debug: 
+		print "----------"
+		print "STATE : "
+		print self.__player.get_state()
+		print "----------"
+	    if self.__player.get_state() == vlc.State.Ended:
+		if not self.__kill_at_end and self.__interface != None: 
+		    if not self.__interface.set_next_music():
+			self.__player.stop()	
+			if self.__debug: 
+			    print "----------"
+			    print "STATE : "
+			    print self.__player.get_state()
+			    print "----------"
+		else :
+		    self.__is_alive = False
+	    else:
+		time.sleep(0.5)
 
