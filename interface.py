@@ -55,11 +55,11 @@ class CommandLineInterface:
 		print "    set <time in sec>"
 	    elif commands[0] == "set":
 		#need to parse time over a minute to the format hh:mm:ss
-		self._video_player.set_time(int(float(commands[1]))*10)
+		self.__video_player.set_time(int(float(commands[1]))*10)
 	    elif commands[0] == "quality": 
-		self._video_player.set_quality(commands[1])
+		self.__video_player.set_quality(commands[1])
 	    elif commands[0] == "mode": 
-		self._video_player.set_mode(commands[1])
+		self.__video_player.set_mode(commands[1])
 	    elif commands[0] == "pause": 
 		self.__video_player.pause_stream()
 	    elif commands[0] == "play": 
