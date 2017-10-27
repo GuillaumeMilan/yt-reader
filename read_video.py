@@ -49,6 +49,8 @@ class VideoPlayer(Thread):
         self.__url = url
         self.__video = pafy.new(self.__url)
         self.__parse_video()
+        self.__start_stream()
+
     def is_paused(self): 
 	return self.__player.get_state()== vlc.State.Paused
 

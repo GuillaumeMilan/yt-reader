@@ -14,7 +14,6 @@ class CommandLineInterface:
 #define if the user ask to quit the command line 
 	self.__continue = True
     def set_next_music(self): 
-	print self.__urls
 	if self.__urls != [] : 
 	    self.__url = self.__urls[0]
 	    self.__video_player.define_url(self.__urls[0])
