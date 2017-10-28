@@ -35,6 +35,9 @@ class VideoPlayer(Thread):
     
     def set_mode(self,output):
         self.__output = output
+    
+    def get_mode(self):
+        return self.__output
 
     def kill_player(self):
         self.__is_alive = False

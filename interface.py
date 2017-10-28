@@ -1,4 +1,5 @@
 import sys
+from downloader import download
 
 class CommandLineInterface:
     """ 
@@ -52,6 +53,9 @@ class CommandLineInterface:
 		print "    quality <quality> (only Best available)"
 		print "    mode <Video,Audio>"
 		print "    set <time in sec>"
+                print "    dl <file_name>"
+	    elif commands[0] == "dl":
+                download(commands[1],self.__video_player.get_mode())
 	    elif commands[0] == "set":
 		#need to parse time over a minute to the format hh:mm:ss
 		self.__video_player.set_time(int(float(commands[1]))*10)
