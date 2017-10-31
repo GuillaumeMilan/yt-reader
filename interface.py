@@ -36,7 +36,7 @@ class CommandLineInterface:
 		    self.__urls.append(i)
 	    elif commands[0] == "skip" :
 		self.set_next_music()
-	    elif commands[0] == "stop":
+	    elif commands[0] == "stop" or commands[0] == "quit" or commands[0] == "exit":
 	        self.__continue = False
 		self.__video_player.stop_stream()
 		print "Stopping the player"

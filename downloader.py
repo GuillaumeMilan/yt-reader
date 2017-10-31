@@ -4,6 +4,9 @@ import os
 import os.path
 import sys
 from pydub import AudioSegment
+import string
+
+valids_chars_in_file = "-_.() %s%s" % (string.ascii_letters, string.digits)
 
 def download(fname,mode='Video'):
     try:
@@ -21,14 +24,27 @@ def download(fname,mode='Video'):
             print "----------"
             print "Downloading "+video.title
             print "----------"
-            urllib.urlretrieve(stream.url,"downloads/"+video.title+"."+stream.extension)
-        if mode == 'Audio':
-            convert()
+            try:
+                target_file = video.title+"."+stream.extension
+                target_file = ''.join(c for c in target_file if c in valids_chars_in_file)
+                urllib.urlretrieve(stream.url,"downloads/"+target_file)
+                if mode == 'Audio':
+                    convert(target_file)
+            except (IOError):
+                print "Unable to open the file: "+target_file
     except (IOError):
         print "No such file: "+fname
         return 
 
-def convert():
+def convert(filename):
+    path = os.getcwd()
+    path = os.path.join(path,"downloads")
+    OUTPUT_DIR = path
+    print os.path.join(OUTPUT_DIR, '%s.mp3' % filename[:-4])
+    m4a_audio = AudioSegment.from_file(os.path.join(path, filename), "m4a")
+    m4a_audio.export(os.path.join(OUTPUT_DIR, '%s.mp3' % filename[:-4]), "mp3")
+
+def convert_all():
     path = os.getcwd()
     path = os.path.join(path, "downloads")
     OUTPUT_DIR = path
