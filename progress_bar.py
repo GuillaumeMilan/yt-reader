@@ -20,7 +20,6 @@ class DownloadProgress(Thread):
     def run(self):
         while not os.path.exists(self.__filename):
             time.sleep(0.5)
-            print("existe toujours pas")
         online_file = d = urllib.urlopen(self.__url)
         information = online_file.info()
         total_size = int(information.getheaders("Content-Length")[0])
@@ -29,6 +28,7 @@ class DownloadProgress(Thread):
             current_size = int(os.path.getsize(self.__filename))
             percent = (current_size * 100)/total_size
             printProgressBar(percent, prefix = 'Progress:', suffix = 'Complete', length = 50)
+            time.sleep(0.1)
 
         printProgressBar(100, prefix = 'Progress:', suffix = 'Complete', length = 50)
         print()
