@@ -5,6 +5,7 @@ import os.path
 import sys
 from pydub import AudioSegment
 import string
+from progress_bar import DownloadProgress
 
 valids_chars_in_file = "-_.() %s%s" % (string.ascii_letters, string.digits)
 
@@ -23,11 +24,15 @@ def download(fname,mode='Video'):
                 stream=max(stream, key=lambda c: int(c.bitrate[:-1]))
             print "----------"
             print "Downloading "+video.title
-            print "----------"
             try:
                 target_file = video.title+"."+stream.extension
                 target_file = ''.join(c for c in target_file if c in valids_chars_in_file)
+                progress_bar = DownloadProgress("downloads/"+target_file, stream.url)
+                progress_bar.start()
                 urllib.urlretrieve(stream.url,"downloads/"+target_file)
+                progress_bar.join()
+                print "----------"
+                del progress_bar
                 if mode == 'Audio':
                     convert(target_file)
             except (IOError):
