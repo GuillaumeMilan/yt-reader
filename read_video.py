@@ -55,10 +55,10 @@ class VideoPlayer(Thread):
         self.__start_stream()
 
     def is_paused(self): 
-	return self.__player.get_state()== vlc.State.Paused
+        return self.__player.get_state()== vlc.State.Paused
 
     def is_running(self):
-	return not (self.__player.get_state() == vlc.State.NothingSpecial or self.__player.get_state() == vlc.State.Stopped)
+        return not (self.__player.get_state() == vlc.State.NothingSpecial or self.__player.get_state() == vlc.State.Stopped)
 
     def pause_stream(self):
         self.__player.pause()
@@ -66,23 +66,23 @@ class VideoPlayer(Thread):
     def resume_stream(self): 
         self.__player.play()
     def set_time(self, time):
-	self.__player.set_time(time)
+        self.__player.set_time(time)
 
     def is_playing(self): 
         return self.__player.get_state() == vlc.State.Playing
 
     def stop_stream(self): 
         self.__is_alive = False
-	self.__player.stop()
+        self.__player.stop()
     
     def play_stream(self): 
         self.__parse_video()
         self.__start_stream()
     def set_interface(self,interface):
-	""" 
-	    interface must only have a method called set_next_music(self)
-	"""
-	self.__interface = interface
+        """ 
+	        interface must only have a method called set_next_music(self)
+        """
+        self.__interface = interface
     def __parse_video(self): 
         url = ""
         if self.__video == None :
@@ -103,9 +103,9 @@ class VideoPlayer(Thread):
                 stream = self.__video.getbest()
                 url = stream.url
                 #Need to be ajusted to make the user able to pause the music
-        else:
-            print "Not implemented yet!"
-            return  
+            else:
+                print "Not implemented yet!"
+                return  
         self.__player.set_mrl(url)
 
     def __start_stream(self):
@@ -119,16 +119,16 @@ class VideoPlayer(Thread):
 		print self.__player.get_state()
 		print "----------"
 	    if self.__player.get_state() == vlc.State.Ended:
-		if not self.__kill_at_end and self.__interface != None: 
-		    if not self.__interface.set_next_music():
-			self.__player.stop()	
-			if self.__debug: 
-			    print "----------"
-			    print "STATE : "
-			    print self.__player.get_state()
-			    print "----------"
-		else :
-		    self.__is_alive = False
+		    if not self.__kill_at_end and self.__interface != None: 
+		        if not self.__interface.set_next_music():
+			        self.__player.stop()	
+			        if self.__debug: 
+			            print "----------"
+			            print "STATE : "
+			            print self.__player.get_state()
+			            print "----------"
+		    else :
+		        self.__is_alive = False
 	    else:
-		time.sleep(0.5)
+		    time.sleep(0.5)
 

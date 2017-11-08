@@ -1,4 +1,3 @@
-import time
 from read_video import VideoPlayer
 from interface import CommandLineInterface
 
