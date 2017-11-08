@@ -24,17 +24,27 @@ class DownloadProgress(Thread):
         information = online_file.info()
         total_size = int(information.getheaders("Content-Length")[0])
         percent = 0
+        previous_size = 0
         while percent < 100:
             current_size = int(os.path.getsize(self.__filename))
+            rate = current_size - previous_size
+            previous_size = current_size
             percent = (current_size * 100)/total_size
-            printProgressBar(percent, prefix = 'Progress:', suffix = 'Complete', length = 50)
+            printProgressBar(percent, prefix = 'Progress:', suffix = 'Complete', length = 30, rate=(rate*10))
             time.sleep(0.1)
 
-        printProgressBar(100, prefix = 'Progress:', suffix = 'Complete', length = 50)
+        printProgressBar(100, prefix = 'Progress:', suffix = 'Complete', length = 30)
         print()
 # Print iterations progress
+def to_str(integer=0):
+    if integer<10:
+        return "  "+str(integer)
+    elif integer<100:
+        return " "+str(integer)
+    elif integer<1000:
+        return str(integer)
 
-def printProgressBar (percent, prefix = '', suffix = '', decimals = 1, length = 100, fill = '='):
+def printProgressBar (percent, prefix = '', suffix = '', decimals = 1, length = 100, fill = '=', rate = 0):
     """
     Call in a loop to create terminal progress bar
     @params:
@@ -45,10 +55,18 @@ def printProgressBar (percent, prefix = '', suffix = '', decimals = 1, length = 
         length      - Optional  : character length of bar (Int)
         fill        - Optional  : bar fill character (Str)
     """
+    str_srate = "0  B/s"
+    if rate < 1000:
+        str_rate = to_str(rate) + "  B/s"
+    elif rate < 1000000:
+        str_rate = to_str(rate//1000) + " kB/s"
+    elif rate < 1000000000:
+        str_rate = to_str(rate//1000000) + " MB/s"
+
     filledLength = int(length * percent // 100)
     bar = fill * filledLength + ' ' * (length - filledLength)
     percent_str = str(percent)+"%"
-    print('\r%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end = '\r')
+    print('\r%s |%s| %s%% %s %s' % (prefix, bar, percent, suffix, str_rate), end = '\r')
 #    # Print New Line on Complete
 #    if percent == 100: 
 #        print()
