@@ -26,9 +26,9 @@ class VideoPlayer(Thread):
 #define kill the player when the next video end
         self.__kill_at_end = False
 #define if the player is used with an interface 
-	self.__interface = None
+        self.__interface = None
 #define if the player is runnning in debug mode 
-	self.__debug = debug
+        self.__debug = debug
 
     def set_quality(self,quality): 
         self.__quality = quality
