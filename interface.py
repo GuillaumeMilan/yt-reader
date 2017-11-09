@@ -1,5 +1,6 @@
 import sys
 from downloader import download
+import pafy
 
 class CommandLineInterface:
     """ 
@@ -15,14 +16,8 @@ class CommandLineInterface:
 #define if the user ask to quit the command line 
 	self.__continue = True
     def set_next_music(self): 
-	if self.__urls != [] : 
-	    self.__url = self.__urls[0]
-	    self.__video_player.define_url(self.__urls[0])
-	    del self.__urls[0]
-	    return True
-	else :
-	    print "No new music to play! Add new music and start the player again!"
-	    return False
+        self.__video_player.skip()
+
     def get_current_music(self): 
 	print self.__url
 
@@ -33,7 +28,7 @@ class CommandLineInterface:
 	    commands = command.split(" ")
 	    if commands[0] == "url":
 		for i in commands [1:]: 
-		    self.__urls.append(i)
+                    self.__video_player.add_url(i)
 	    elif commands[0] == "skip" :
 		self.set_next_music()
 	    elif commands[0] == "stop" or commands[0] == "quit" or commands[0] == "exit":

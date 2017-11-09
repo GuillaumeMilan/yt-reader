@@ -29,7 +29,26 @@ class VideoPlayer(Thread):
         self.__interface = None
 #define if the player is runnning in debug mode 
         self.__debug = debug
+#define the list of next content to watch 
+        slef.__following = []
+#define the history off all content watched 
+        slef.__history = []
+#define the video currently playing
+        self.__current  = None
 
+
+    def add_url(self, url):
+        if "list=" in url:
+            #this is an url of a playlist 
+            playlist = pafy.get_playlist(url)
+            for i in playlist['items']:
+                self.__following.append(i['pafy'])
+        elif "www.youtube.com/watch?v=" in url :
+            video = pafy.new(url)
+            self.__following.append(video)
+        else :
+            print "Error: url not recoginzed"
+    
     def set_quality(self,quality): 
         self.__quality = quality
     
@@ -78,16 +97,22 @@ class VideoPlayer(Thread):
     def play_stream(self): 
         self.__parse_video()
         self.__start_stream()
+
     def set_interface(self,interface):
         """ 
 	        interface must only have a method called set_next_music(self)
         """
         self.__interface = interface
+
+    def skip(self):
+        self.__history.append(self.__video)
+        self.__video = None
+        self.play_stream()
+
     def __parse_video(self): 
         url = ""
         if self.__video == None :
-            print "Cannot read a none video. Use video_player.define_url(url)!"
-            return 
+            self.__video = self.__following.pop()
         if self.__output == 'Audio': 
             if self.__quality=='Best':
                 #Play audio 
@@ -120,13 +145,18 @@ class VideoPlayer(Thread):
 		print "----------"
 	    if self.__player.get_state() == vlc.State.Ended:
 		    if not self.__kill_at_end and self.__interface != None: 
-		        if not self.__interface.set_next_music():
+		        if len(self.__following)==0:
 			        self.__player.stop()	
 			        if self.__debug: 
 			            print "----------"
 			            print "STATE : "
 			            print self.__player.get_state()
 			            print "----------"
+                        else: 
+                            self.__history.append(self.__video)
+                            self.__video = None
+                            self.__parse_video()
+                            self.__start_stream()
 		    else :
 		        self.__is_alive = False
 	    else:
