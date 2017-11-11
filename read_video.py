@@ -117,9 +117,11 @@ class VideoPlayer(Thread):
         print "----------"
     
     def is_playing(self):
-        print "----------"
-        print self.__video.title
-        print "----------"
+        if self.__video is not None:
+            print "----------"
+            print self.__video.title
+            print "----------"
+
 
     def skip(self):
         self.__history.append(self.__video)
