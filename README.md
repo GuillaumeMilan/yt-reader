@@ -6,7 +6,7 @@ is designed for low performance tools.
 
 **YT-READER** can display videos as videos or as music and download them as m4a or mp4.
 
-#How to install
+# How to install
 
 For the moment there is no setup.py file so you need to install the software manually 
 
