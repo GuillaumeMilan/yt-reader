@@ -60,6 +60,12 @@ class CommandLineInterface:
 		self.__video_player.set_mode(commands[1])
 	    elif commands[0] == "pause": 
 		self.__video_player.pause_stream()
+	    elif commands[0] == "playlist":
+                self.__video_player.to_play()
+	    elif commands[0] == "history": 
+                self.__video_player.history()
+	    elif commands[0] == "current":
+                self.__video_player.is_playing()
 	    elif commands[0] == "play": 
 		if self.__video_player.is_running():
 		    if self.__video_player.is_paused(): 

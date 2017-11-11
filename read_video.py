@@ -103,6 +103,23 @@ class VideoPlayer(Thread):
 	        interface must only have a method called set_next_music(self)
         """
         self.__interface = interface
+    
+    def to_play(self):
+        print "----------"
+        for i in self.__following:
+            print i.title
+        print "----------"
+
+    def history(self):
+        print "----------"
+        for i in self.__history:
+            print i.title
+        print "----------"
+    
+    def is_playing(self):
+        print "----------"
+        print self.__video.title
+        print "----------"
 
     def skip(self):
         self.__history.append(self.__video)
@@ -115,7 +132,7 @@ class VideoPlayer(Thread):
             if len(self.__following) == 0:
                 print "No video to play!"
                 return
-            self.__video = self.__following.pop()
+            self.__video = self.__following.pop(0)
         if self.__output == 'Audio': 
             if self.__quality=='Best':
                 #Play audio 
@@ -134,7 +151,6 @@ class VideoPlayer(Thread):
             else:
                 print "Not implemented yet!"
                 return  
-        print "fin"
         self.__player.set_mrl(url)
 
     def __start_stream(self):
