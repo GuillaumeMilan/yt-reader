@@ -71,7 +71,6 @@ class CommandLineInterface:
 		    else: 
 			self.__video_player.play_stream()
 		else :
-		    self.set_next_music()
 		    self.__video_player.play_stream()
 
 	    else :

@@ -30,9 +30,9 @@ class VideoPlayer(Thread):
 #define if the player is runnning in debug mode 
         self.__debug = debug
 #define the list of next content to watch 
-        slef.__following = []
+        self.__following = []
 #define the history off all content watched 
-        slef.__history = []
+        self.__history = []
 #define the video currently playing
         self.__current  = None
 
@@ -112,6 +112,9 @@ class VideoPlayer(Thread):
     def __parse_video(self): 
         url = ""
         if self.__video == None :
+            if len(self.__following) == 0:
+                print "No video to play!"
+                return
             self.__video = self.__following.pop()
         if self.__output == 'Audio': 
             if self.__quality=='Best':
@@ -131,6 +134,7 @@ class VideoPlayer(Thread):
             else:
                 print "Not implemented yet!"
                 return  
+        print "fin"
         self.__player.set_mrl(url)
 
     def __start_stream(self):
