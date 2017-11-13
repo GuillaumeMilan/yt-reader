@@ -78,7 +78,9 @@ class CommandLineInterface:
 			self.__video_player.play_stream()
 		else :
 		    self.__video_player.play_stream()
-
+            elif commands[0] == "":
+                pass
 	    else :
+                print commands[0]
 		print "Command not found!"
 	    sys.stdout.write(">>>")
