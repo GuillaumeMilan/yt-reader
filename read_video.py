@@ -51,7 +51,13 @@ class VideoPlayer(Thread):
     
     def set_quality(self,quality): 
         self.__quality = quality
-    
+
+    def set_volume(self,value):
+        if value < 0 or value > 200 :
+            print "Cannot set the volume to: "+str(value)
+            return 
+        self.__player.audio_set_volume(value)
+
     def set_mode(self,output):
         self.__output = output
     
@@ -104,16 +110,20 @@ class VideoPlayer(Thread):
         """
         self.__interface = interface
     
+    def __to_string(self,value, max_val):
+        nb_blank = len(str(max_val))-len(str(value))
+        return str(value)+" "*nb_blank
+
     def to_play(self):
         print "----------"
-        for i in self.__following:
-            print i.title
+        for i in range(0,len(self.__following)):
+            print self.__to_string(i,len(self.__following))+" -- "+self.__following[i].title
         print "----------"
 
     def history(self):
         print "----------"
-        for i in self.__history:
-            print i.title
+        for i in range(0,len(self.__history)):
+            print self.__to_string(i,len(self.__history))+" -- "+self.__history[i].title
         print "----------"
     
     def is_playing(self):

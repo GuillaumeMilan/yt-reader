@@ -78,6 +78,8 @@ class CommandLineInterface:
 			self.__video_player.play_stream()
 		else :
 		    self.__video_player.play_stream()
+            elif commands[0] == "vol":
+                self.__video_player.set_volume(int(commands[1]))
             elif commands[0] == "":
                 pass
 	    else :
