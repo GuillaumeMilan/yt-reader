@@ -33,8 +33,6 @@ def download(fname,mode='Video'):
                 progress_bar.join()
                 print "----------"
                 del progress_bar
-                if mode == 'Audio':
-                    convert(target_file)
             except (IOError):
                 print "Unable to open the file: "+target_file
     except (IOError):

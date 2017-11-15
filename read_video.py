@@ -106,7 +106,7 @@ class VideoPlayer(Thread):
 
     def set_interface(self,interface):
         """ 
-	        interface must only have a method called set_next_music(self)
+            interface must only have a method called set_next_music(self)
         """
         self.__interface = interface
     
@@ -168,27 +168,29 @@ class VideoPlayer(Thread):
     
     def run(self):
         while self.__is_alive:
-	    if self.__debug: 
-		print "----------"
-		print "STATE : "
-		print self.__player.get_state()
-		print "----------"
-	    if self.__player.get_state() == vlc.State.Ended:
-		    if not self.__kill_at_end and self.__interface != None: 
-		        if len(self.__following)==0:
-			        self.__player.stop()	
-			        if self.__debug: 
-			            print "----------"
-			            print "STATE : "
-			            print self.__player.get_state()
-			            print "----------"
-                        else: 
-                            self.__history.append(self.__video)
-                            self.__video = None
-                            self.__parse_video()
-                            self.__start_stream()
-		    else :
-		        self.__is_alive = False
-	    else:
-		    time.sleep(0.5)
+            if self.__debug: 
+                print "----------"
+                print "STATE : "
+                print self.__player.get_state()
+                print "----------"
+            if self.__player.get_state() == vlc.State.Ended:
+                if not self.__kill_at_end and self.__interface != None: 
+                    if len(self.__following)==0:
+                        self.__player.stop()    
+                        self.__history.append(self.__video)
+                        self.__video = None
+                        if self.__debug: 
+                            print "----------"
+                            print "STATE : "
+                            print self.__player.get_state()
+                            print "----------"
+                    else: 
+                        self.__history.append(self.__video)
+                        self.__video = None
+                        self.__parse_video()
+                        self.__start_stream()
+                else :
+                    self.__is_alive = False
+            else:
+                time.sleep(0.5)
 
