@@ -1,5 +1,6 @@
 import sys
 from downloader import download
+from downloader import download_pafy
 import pafy
 
 class CommandLineInterface:
@@ -50,7 +51,14 @@ class CommandLineInterface:
 		print "    set <time in sec>"
                 print "    dl <file_name>"
 	    elif commands[0] == "dl":
-                download(commands[1],self.__video_player.get_mode())
+                if commands[1] == "current":
+                    download_pafy(self.__video_player.get_current(),self.__video_player.get_mode())
+                elif commands[1] == "playlist":
+                    playlist = self.__video_player.get_playlist()
+                    for i in playlist:
+                        download_pafy(i, self.__video_player.get_mode())
+                else :
+                    download(commands[1],self.__video_player.get_mode())
 	    elif commands[0] == "set":
 		#need to parse time over a minute to the format hh:mm:ss
 		self.__video_player.set_time(int(float(commands[1]))*10)

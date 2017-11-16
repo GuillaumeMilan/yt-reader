@@ -93,9 +93,6 @@ class VideoPlayer(Thread):
     def set_time(self, time):
         self.__player.set_time(time)
 
-    def is_playing(self): 
-        return self.__player.get_state() == vlc.State.Playing
-
     def stop_stream(self): 
         self.__is_alive = False
         self.__player.stop()
@@ -127,9 +124,17 @@ class VideoPlayer(Thread):
         print "----------"
     
     def is_playing(self):
+        if self.__video==None :
+            return 
         print "----------"
         print self.__video.title
         print "----------"
+    
+    def get_current(self):
+        return self.__video
+    
+    def get_playlist(self):
+        return self.__following
 
     def skip(self):
         self.__history.append(self.__video)
