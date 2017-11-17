@@ -74,6 +74,8 @@ class CommandLineInterface:
                 self.__video_player.history()
 	    elif commands[0] == "current":
                 self.__video_player.is_playing()
+	    elif commands[0] == "time":
+                self.__video_player.get_time()
 	    elif commands[0] == "play": 
 		if self.__video_player.is_running():
 		    if self.__video_player.is_paused(): 

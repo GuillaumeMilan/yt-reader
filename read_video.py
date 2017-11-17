@@ -58,6 +58,19 @@ class VideoPlayer(Thread):
             return 
         self.__player.audio_set_volume(value)
 
+    def __hour(self,in_second):
+        if in_second/3600 != 0:
+            return str(in_second/3600)+":"+str((in_second % 3600)/60)+":"+str(in_second % 60)
+        else:
+            return str((in_second % 3600)/60)+":"+str(in_second % 60)
+    
+    def get_time(self): 
+        if self.__video == None:
+            print "No video playing at the moment"
+            return 
+        current_time = self.__player.get_time()/1000
+        print self.__hour(current_time)+"/"+self.__hour(self.__video.length)
+
     def set_mode(self,output):
         self.__output = output
     
