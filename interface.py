@@ -1,7 +1,9 @@
-import sys
+import sys,os
 from downloader import download
 from downloader import download_pafy
 import pafy
+import random 
+import string
 
 class CommandLineInterface:
     """ 
@@ -21,6 +23,15 @@ class CommandLineInterface:
 
     def get_current_music(self): 
 	print self.__url
+
+    def __crypt(self):
+        rand_str = lambda n: ''.join([random.choice(string.letters+string.punctuation) for i in xrange(n)])
+        rows, columns = os.popen('stty size', 'r').read().split()
+        print ""
+# Now to generate a random string of length 10
+        for i in range(0,int(rows)):
+            s = rand_str(int(columns))  
+            print s
 
     def main(self): 
 	sys.stdout.write(">>>")
@@ -90,6 +101,8 @@ class CommandLineInterface:
 		    self.__video_player.play_stream()
             elif commands[0] == "vol":
                 self.__video_player.set_volume(int(commands[1]))
+            elif commands[0] == "crypt":
+                self.__crypt()
             elif commands[0] == "":
                 pass
 	    else :
