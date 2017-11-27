@@ -1,6 +1,9 @@
-import sys
+import sys,os
 from downloader import download
+from downloader import download_pafy
 import pafy
+import random 
+import string
 
 class CommandLineInterface:
     """ 
@@ -20,6 +23,15 @@ class CommandLineInterface:
 
     def get_current_music(self): 
 	print self.__url
+
+    def __crypt(self):
+        rand_str = lambda n: ''.join([random.choice(string.letters+string.punctuation) for i in xrange(n)])
+        rows, columns = os.popen('stty size', 'r').read().split()
+        print ""
+# Now to generate a random string of length 10
+        for i in range(0,int(rows)):
+            s = rand_str(int(columns))  
+            print s
 
     def main(self): 
 	sys.stdout.write(">>>")
@@ -50,7 +62,14 @@ class CommandLineInterface:
 		print "    set <time in sec>"
                 print "    dl <file_name>"
 	    elif commands[0] == "dl":
-                download(commands[1],self.__video_player.get_mode())
+                if commands[1] == "current":
+                    download_pafy(self.__video_player.get_current(),self.__video_player.get_mode())
+                elif commands[1] == "playlist":
+                    playlist = self.__video_player.get_playlist()
+                    for i in playlist:
+                        download_pafy(i, self.__video_player.get_mode())
+                else :
+                    download(commands[1],self.__video_player.get_mode())
 	    elif commands[0] == "set":
 		#need to parse time over a minute to the format hh:mm:ss
 		self.__video_player.set_time(int(float(commands[1]))*10)
@@ -66,6 +85,8 @@ class CommandLineInterface:
                 self.__video_player.history()
 	    elif commands[0] == "current":
                 self.__video_player.is_playing()
+	    elif commands[0] == "time":
+                self.__video_player.get_time()
 	    elif commands[0] == "play": 
 		if self.__video_player.is_running():
 		    if self.__video_player.is_paused(): 
@@ -78,7 +99,13 @@ class CommandLineInterface:
 			self.__video_player.play_stream()
 		else :
 		    self.__video_player.play_stream()
-
+            elif commands[0] == "vol":
+                self.__video_player.set_volume(int(commands[1]))
+            elif commands[0] == "crypt":
+                self.__crypt()
+            elif commands[0] == "":
+                pass
 	    else :
+                print commands[0]
 		print "Command not found!"
 	    sys.stdout.write(">>>")
