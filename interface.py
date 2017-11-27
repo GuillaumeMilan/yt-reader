@@ -4,6 +4,10 @@ from downloader import download_pafy
 import pafy
 import random 
 import string
+class GraphicalInterface:
+    def __init__(self, video_player):
+        self.__video_player = video_player
+
 
 class CommandLineInterface:
     """ 
