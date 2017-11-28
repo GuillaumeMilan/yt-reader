@@ -5,7 +5,7 @@ try:
     with open(".config") as config:
         content = config.readlines()
 except (IOError):
-    print "No config file found"
+    print("No config file found")
     content.append('Best\n')
     content.append('Audio\n')
 my_player = VideoPlayer(debug=False)

@@ -47,14 +47,14 @@ class VideoPlayer(Thread):
             video = pafy.new(url)
             self.__following.append(video)
         else :
-            print "Error: url not recoginzed"
+            print("Error: url not recoginzed")
     
     def set_quality(self,quality): 
         self.__quality = quality
 
     def set_volume(self,value):
         if value < 0 or value > 200 :
-            print "Cannot set the volume to: "+str(value)
+            print("Cannot set the volume to: "+str(value))
             return 
         self.__player.audio_set_volume(value)
 
@@ -72,10 +72,10 @@ class VideoPlayer(Thread):
     
     def get_time(self): 
         if self.__video == None:
-            print "No video playing at the moment"
+            print("No video playing at the moment")
             return 
         current_time = self.__player.get_time()/1000
-        print self.__hour(current_time)+"/"+self.__hour(self.__video.length)
+        print(self.__hour(current_time)+"/"+self.__hour(self.__video.length))
 
     def set_mode(self,output):
         self.__output = output
@@ -131,22 +131,22 @@ class VideoPlayer(Thread):
         return str(value)+" "*nb_blank
 
     def to_play(self):
-        print "----------"
+        print("----------")
         for i in range(0,len(self.__following)):
-            print self.__to_string(i,len(self.__following))+" -- "+self.__following[i].title
-        print "----------"
+            print(self.__to_string(i,len(self.__following))+" -- "+self.__following[i].title)
+        print("----------")
 
     def history(self):
-        print "----------"
+        print("----------")
         for i in range(0,len(self.__history)):
-            print self.__to_string(i,len(self.__history))+" -- "+self.__history[i].title
-        print "----------"
+            print(self.__to_string(i,len(self.__history))+" -- "+self.__history[i].title)
+        print("----------")
     
     def is_playing(self):
         if self.__video is not None:
-            print "----------"
-            print self.__video.title
-            print "----------"
+            print("----------")
+            print(self.__video.title)
+            print("----------")
 
     def get_current(self):
         return self.__video
@@ -163,7 +163,7 @@ class VideoPlayer(Thread):
         url = ""
         if self.__video == None :
             if len(self.__following) == 0:
-                print "No video to play!"
+                print("No video to play!")
                 return
             self.__video = self.__following.pop(0)
         if self.__output == 'Audio': 
@@ -174,7 +174,7 @@ class VideoPlayer(Thread):
                 highest_quality=max(stream, key=lambda c: int(c.bitrate[:-1]))
                 url = highest_quality.url
             else :
-                print "Not Yet implemented!"
+                print("Not Yet implemented!")
                 return 
         elif self.__output == 'Video':
             if self.__quality == 'Best' : 
@@ -182,7 +182,7 @@ class VideoPlayer(Thread):
                 url = stream.url
                 #Need to be ajusted to make the user able to pause the music
             else:
-                print "Not implemented yet!"
+                print("Not implemented yet!")
                 return  
         self.__player.set_mrl(url)
 
@@ -192,10 +192,10 @@ class VideoPlayer(Thread):
     def run(self):
         while self.__is_alive:
             if self.__debug: 
-                print "----------"
-                print "STATE : "
-                print self.__player.get_state()
-                print "----------"
+                print("----------")
+                print("STATE : ")
+                print(self.__player.get_state())
+                print("----------")
             if self.__player.get_state() == vlc.State.Ended:
                 if not self.__kill_at_end and self.__interface != None: 
                     if len(self.__following)==0:
@@ -203,10 +203,10 @@ class VideoPlayer(Thread):
                         self.__history.append(self.__video)
                         self.__video = None
                         if self.__debug: 
-                            print "----------"
-                            print "STATE : "
-                            print self.__player.get_state()
-                            print "----------"
+                            print("----------")
+                            print("STATE : ")
+                            print(self.__player.get_state())
+                            print("----------")
                     else: 
                         self.__history.append(self.__video)
                         self.__video = None
