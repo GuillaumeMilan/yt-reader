@@ -4,108 +4,11 @@ from downloader import download_pafy
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QLineEdit
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtGui import QIcon
+
+from graphical_object import GraphicalObject
 import pafy
 import random 
 import string
-
-def verify(value):
-    """ Verify that value is between 0 and 100 """ 
-    if value >= 0 and value <= 100:
-        return True 
-    else :
-        return False
-
-class GraphicalObject():
-    def __init__(self, obj, width = -1, height = -1, pos_x = 0, pos_y = 0, parent=None, children=[]):
-        """
-            height and width are in procent of the parent window.
-            if there is no parent, this is in pixel.
-            object @type is QObject can be None 
-            parent @type is GraphicalObject
-            children @type is GraphicalObject
-            width height @type are int (can be percent or real size depending if parent is None or not )
-        """
-        self.__object = obj
-        self.__parent = parent
-        self.__percent_pos_x = 0
-        self.__percent_pos_y = 0
-        self.__pos_x = 0
-        self.__pos_y = 0
-        self.__percent_height = -1
-        self.__percent_width = -1
-        self.__width = -1
-        self.__height = -1
-        if parent == None:
-            self.__height = height
-            self.__width = width
-            self.__percent_height = -1
-            self.__percent_width = -1
-            self.__pos_x = pos_x
-            self.__pos_y = pos_y
-        else: 
-            # Verify percent size is correct (0-100)
-            if (not verify(height)) or (not verify(width)):
-                raise ValueError("The size given is not a percent size")
-            self.__percent_height = height
-            self.__percent_width = width
-            self.__percent_pos_x = pos_x
-            self.__percent_pos_y = pos_y
-            self.__height = (parent.getRealHeight()*height) /100
-            self.__width = (parent.getRealWidth()*width)    /100
-            self.__pos_y = (parent.getRealHeight()*pos_y)   /100
-            self.__pos_x = (parent.getRealWidth()*pos_x)    /100
-
-    def getSize(self):
-        if parent == None: 
-            return (self.__width, self.__height)
-        else :
-            return parent.getSize()
-    
-    def getRealHeight(self):
-        return self.__height
-    
-    def getRealWidth(self):
-        return self.__width
-
-    def getPercentHeight(self):
-        return slef.__percent_height
-
-    def getPercentWidth(self):
-        return self.__percent_width
-
-    def resize(self, width, height):
-        if parent == None:
-            self.__height = height
-            self.__width = width
-            self.__percent_height = -1
-            self.__percent_width = -1
-        else: 
-            # Verify percent size is correct (0-100)
-            if (not verify(height)) or (not verify(width)):
-                raise ValueError("The size given is not a percent size")
-            self.__percent_height = height
-            self.__percent_width = width
-            self.__height = (parent.getRealHeight()*height) /100
-            slef.__width = (parent.getRealWidth()*width)    /100
-        if slef.__object != None:
-            self.__object.resize(self.__width, self.__height)
-
-    def move(self, pos_x, pos_y):
-        if parent == None:
-            self.__pos_x = pos_x
-            self.__pos_y = pos_y
-            self.__percent_pos_x = 0
-            self.__percent_pos_y = 0
-        else:
-            # Verify percent size is correct (0-100)
-            if (not verify(pos_x)) or (not verify(pos_y)):
-                raise ValueError("The position given is not a percent size")
-            self.__percent_pos_x = pos_x
-            self.__percent_pos_y = pos_y 
-            self.__pos_x = (parent.getRealWidth()*pos_x)    /100
-            self.__pos_y = (parent.getRealHeight()*pos_y)   /100
-        if self.__object != None:
-            self.__object.move(slef.__pos_x, slef.__pos_y)
 
 class GraphicalInterface(QMainWindow):
     def __init__(self, video_player):
@@ -114,6 +17,10 @@ class GraphicalInterface(QMainWindow):
         self.__video_player = video_player
         self.__search_btn = None
         self.__textbox = None
+        self.__mainbox = None
+        self.__header = None
+        self.__searchbar = None
+        self.__searchbutton = None
         self.__object_list = []
     def main(self):
         """ 
@@ -123,15 +30,16 @@ class GraphicalInterface(QMainWindow):
         self.move(0, 0)
         self.setWindowTitle('Youtube Reader')
         self.setWindowIcon(QIcon('resources/icon.svg'))
-        
+        self.__mainbox = GraphicalObject(self, width = 640, height = 480, pos_x = 0, pos_y = 0)
+
+        self.__header = GraphicalObject(None, width = 100, height = 10, pos_x = 0, pos_y = 0, parent = self.__mainbox)
+
         self.__textbox=QLineEdit(self)
-        self.__textbox.move(20,20)
-        self.__textbox.resize(280,40)
+        self.__searchbar = GraphicalObject(self.__textbox, width = 70, height = 80, pos_x = 15, pos_y = 10, parent = self.__header)
 
         self.__search_btn = QPushButton('Search', self)
         self.__search_btn.clicked.connect(self.handle_research)
-        self.__search_btn.move(300,20)
-        self.__search_btn.resize(40,40)
+        self.__searchbutton = GraphicalObject(self.__search_btn, width = 10, height = 80, pos_x = 87, pos_y = 10, parent = self.__header)
 
         self.show()
         self.__app.exec_()
@@ -144,6 +52,7 @@ class GraphicalInterface(QMainWindow):
     def resizeEvent (self, event):
         print("OLD height: " + str(event.oldSize().height())+ " width: " + str(event.oldSize().width()))
         print("NEW height: " + str(event.size().height())+ " width: " + str(event.oldSize().width()))
+        self.__mainbox.resize(event.size().width(), event.size().height())
 
 class CommandLineInterface:
     """ 
