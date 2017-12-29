@@ -1,8 +1,10 @@
 import sys,os
 from downloader import download
 from downloader import download_pafy
+from combo_box import ComboDemo
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QLineEdit
 from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
 
 from graphical_object import GraphicalObject
@@ -15,12 +17,17 @@ class GraphicalInterface(QMainWindow):
         self.__app = QApplication(sys.argv)
         super().__init__()
         self.__video_player = video_player
-        self.__search_btn = None
-        self.__textbox = None
-        self.__mainbox = None
-        self.__header = None
+# List of all the QWidget present in the main window 
+        self.__searchbtn = None
         self.__searchbar = None
-        self.__searchbutton = None
+        self.__mainbox = None
+        self.__modebox = None
+# List of all the GraphicalObject in the main window 
+        self.__header = None
+        self.__footer = None
+        self.__gr_searchbar = None
+        self.__gr_searchbtn = None
+        self.__gr_modebox = None
         self.__object_list = []
     def main(self):
         """ 
@@ -30,24 +37,30 @@ class GraphicalInterface(QMainWindow):
         self.move(0, 0)
         self.setWindowTitle('Youtube Reader')
         self.setWindowIcon(QIcon('resources/icon.svg'))
+        self.setStyleSheet("QMainWindow {background: 'white';}");
         self.__mainbox = GraphicalObject(self, width = 640, height = 480, pos_x = 0, pos_y = 0)
 
         self.__header = GraphicalObject(None, width = 100, height = 10, pos_x = 0, pos_y = 0, parent = self.__mainbox)
 
-        self.__textbox=QLineEdit(self)
-        self.__searchbar = GraphicalObject(self.__textbox, width = 70, height = 80, pos_x = 15, pos_y = 10, parent = self.__header)
+        self.__searchbar=QLineEdit(self)
+        self.__gr_searchbar = GraphicalObject(self.__searchbar, width = 70, height = 60, pos_x = 15, pos_y = 20, parent = self.__header)
 
-        self.__search_btn = QPushButton('Search', self)
-        self.__search_btn.clicked.connect(self.handle_research)
-        self.__searchbutton = GraphicalObject(self.__search_btn, width = 10, height = 80, pos_x = 87, pos_y = 10, parent = self.__header)
+        self.__searchbtn = QPushButton('Search', self)
+        self.__searchbtn.clicked.connect(self.handle_research)
+        self.__gr_searchbtn = GraphicalObject(self.__searchbtn, width = 10, height = 60, pos_x = 87, pos_y = 20, parent = self.__header)
+        
+        self.__footer = GraphicalObject(None, width = 100, height = 10, pos_x = 0, pos_y = 90, parent = self.__mainbox)
+
+        self.__modebox = ComboDemo(self, self.__video_player)
+        self.__gr_modebox = GraphicalObject(self.__modebox, width = 20, height = 100, pos_x = 80, pos_y = 20, parent = self.__footer)
 
         self.show()
         self.__app.exec_()
         self.__video_player.stop_stream()
 
     def handle_research(self):
-        print(self.__textbox.text())
-        self.__textbox.clear()
+        print(self.__searchbar.text())
+        self.__searchbar.clear()
     
     def resizeEvent (self, event):
         print("OLD height: " + str(event.oldSize().height())+ " width: " + str(event.oldSize().width()))

@@ -116,6 +116,7 @@ class GraphicalObject():
 
         for i in self.__children:
             i.updateObject()
+        print("OBJECT: WIDTH = "+str(self.__width)+" HEIGHT = "+str(self.__height)+" POS X = "+str(self.__pos_x)+" POS Y = "+str(self.__pos_y))
 
     def move(self, pos_x, pos_y):
         if self.__parent == None:
