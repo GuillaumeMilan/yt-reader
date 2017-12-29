@@ -1,5 +1,6 @@
 import pafy 
 import urllib
+import wget
 import os
 import os.path
 import sys
@@ -16,16 +17,17 @@ def download_pafy(video=None,mode='Video'):
         stream = video.audiostreams
         stream = [s for s in stream if "webm" not in s.extension]
         stream=max(stream, key=lambda c: int(c.bitrate[:-1]))
-    print(stream)
     print("----------")
     print("Downloading "+video.title)
     try:
         target_file = video.title+"."+stream.extension
         target_file = ''.join(c for c in target_file if c in valids_chars_in_file)
-        progress_bar = DownloadProgress("downloads/"+target_file, stream.url)
-        progress_bar.start()
-        urllib.urlretrieve(stream.url,"downloads/"+target_file)
-        progress_bar.join()
+        output = wget.download(stream.url, out="downloads/"+target_file, bar=None)
+        #progress_bar = DownloadProgress("downloads/"+target_file, stream.url)
+        #progress_bar.start()
+        #print(stream.url)
+        #urllib.request.urlretrieve(stream.url,"downloads/"+target_file)
+        #progress_bar.join()
         print("----------")
         del progress_bar
     except (IOError):
@@ -47,14 +49,16 @@ def download(fname,mode='Video'):
             print("----------")
             print("Downloading "+video.title)
             try:
+                print(stream)
                 target_file = video.title+"."+stream.extension
                 target_file = ''.join(c for c in target_file if c in valids_chars_in_file)
-                progress_bar = DownloadProgress("downloads/"+target_file, stream.url)
-                progress_bar.start()
-                urllib.urlretrieve(stream.url,"downloads/"+target_file)
-                progress_bar.join()
+                output = wget.download(stream.url, out="downloads/"+target_file, bar=None)
+                #progress_bar = DownloadProgress("downloads/"+target_file, stream.url)
+                #progress_bar.start()
+                #urllib.request.urlretrieve(stream.url,"downloads/"+target_file)
+                #progress_bar.join()
                 print("----------")
-                del progress_bar
+                #del progress_bar
             except (IOError):
                 print("Unable to open the file: "+target_file)
     except (IOError):
