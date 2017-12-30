@@ -36,6 +36,8 @@ class VideoPlayer(Thread):
 #define the video currently playing
         self.__current  = None
 
+    def get_player(self):
+        return self.__player
 
     def add_url(self, url):
         if "list=" in url:

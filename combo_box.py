@@ -14,6 +14,7 @@ class ComboDemo(QWidget):
    def selectionchange(self,i):
        if self.__video_player != None:
            self.__video_player.set_mode(self.cb.currentText())
+
 #
 #      for count in range(self.cb.count()):
 #         print(self.cb.itemText(count))

@@ -3,8 +3,8 @@ from downloader import download
 from downloader import download_pafy
 from combo_box import ComboDemo
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QLineEdit
-from PyQt5.QtWidgets import QPushButton, QLabel
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtWidgets import QPushButton, QLabel, QFrame
+from PyQt5.QtGui import QIcon, QPixmap, QPalette, QColor
 from graphical_object import GraphicalObject
 import pafy
 import random 
@@ -15,20 +15,27 @@ class GraphicalInterface(QMainWindow):
         self.__app = QApplication(sys.argv)
         super().__init__()
         self.__video_player = video_player
+# List of all derivated object from the following QWidgets 
+        self.__palette = None
+        self.__logo_image = None
 # List of all the QWidget present in the main window 
         self.__searchbtn = None
         self.__searchbar = None
         self.__mainbox = None
         self.__modebox = None
         self.__logo = None
+        self.__video_reader = None
 # List of all the GraphicalObject in the main window 
         self.__header = None
         self.__footer = None
+        self.__body = None
         self.__gr_searchbar = None
         self.__gr_searchbtn = None
         self.__gr_modebox = None
         self.__gr_logo = None
+        self.__gr_video_reader = None
         self.__object_list = []
+        
     def main(self):
         """ 
         Main loop of the graphic interface
@@ -49,12 +56,15 @@ class GraphicalInterface(QMainWindow):
         self.__searchbtn.clicked.connect(self.handle_research)
         self.__gr_searchbtn = GraphicalObject(self.__searchbtn, width = 10, height = 60, pos_x = 87, pos_y = 20, parent = self.__header)
 
-        image = QPixmap('resources/logo.png')
+        self.__logo_image = QPixmap('resources/logo.png')
         self.__logo = QLabel(self)
         self.__logo.setScaledContents(True)
-        self.__logo.setPixmap(image)
+        self.__logo.setPixmap(self.__logo_image)
         self.__gr_logo = GraphicalObject(self.__logo, width = 15, height = 60, pos_x = 0, pos_y = 20, parent = self.__header)
-        
+
+        self.__body = GraphicalObject(None, width = 100, height = 80, pos_x = 0, pos_y = 10, parent = self.__mainbox)
+        if self.__video_player.get_mode() == 'Video':
+            self.create_reader()
         self.__footer = GraphicalObject(None, width = 100, height = 10, pos_x = 0, pos_y = 90, parent = self.__mainbox)
 
         self.__modebox = ComboDemo(self, self.__video_player)
@@ -77,6 +87,21 @@ class GraphicalInterface(QMainWindow):
         print("OLD height: " + str(event.oldSize().height())+ " width: " + str(event.oldSize().width()))
         print("NEW height: " + str(event.size().height())+ " width: " + str(event.oldSize().width()))
         self.__mainbox.resize(event.size().width(), event.size().height())
+    
+    def create_reader(self):
+        # code from github.com/devos50/vlc-pyqt5-example.git
+        if sys.platform == "darwin" :
+            from PyQt5.QtWidgets import QMacCocoaViewContainer
+            self.__video_reader = QMacCocoaViewContainer(0)
+        else:
+            self.__video_reader = QFrame(self)
+        self.__palette = self.__video_reader.palette()
+        self.__palette.setColor (QPalette.Window,
+                               QColor(0,0,0))
+        self.__video_reader.setPalette(self.__palette)
+        self.__video_reader.setAutoFillBackground(True)
+
+        self.__gr_video_reader = GraphicalObject(self.__video_reader, width = 80, height = 80, pos_x = 10, pos_y = 10, parent = self.__body)
 
 class CommandLineInterface:
     """ 
