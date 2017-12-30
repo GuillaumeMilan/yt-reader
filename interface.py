@@ -3,10 +3,8 @@ from downloader import download
 from downloader import download_pafy
 from combo_box import ComboDemo
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QLineEdit
-from PyQt5.QtWidgets import QPushButton
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QIcon
-
+from PyQt5.QtWidgets import QPushButton, QLabel
+from PyQt5.QtGui import QIcon, QPixmap
 from graphical_object import GraphicalObject
 import pafy
 import random 
@@ -22,12 +20,14 @@ class GraphicalInterface(QMainWindow):
         self.__searchbar = None
         self.__mainbox = None
         self.__modebox = None
+        self.__logo = None
 # List of all the GraphicalObject in the main window 
         self.__header = None
         self.__footer = None
         self.__gr_searchbar = None
         self.__gr_searchbtn = None
         self.__gr_modebox = None
+        self.__gr_logo = None
         self.__object_list = []
     def main(self):
         """ 
@@ -48,6 +48,12 @@ class GraphicalInterface(QMainWindow):
         self.__searchbtn = QPushButton('Search', self)
         self.__searchbtn.clicked.connect(self.handle_research)
         self.__gr_searchbtn = GraphicalObject(self.__searchbtn, width = 10, height = 60, pos_x = 87, pos_y = 20, parent = self.__header)
+
+        image = QPixmap('resources/logo.png')
+        self.__logo = QLabel(self)
+        self.__logo.setScaledContents(True)
+        self.__logo.setPixmap(image)
+        self.__gr_logo = GraphicalObject(self.__logo, width = 15, height = 60, pos_x = 0, pos_y = 20, parent = self.__header)
         
         self.__footer = GraphicalObject(None, width = 100, height = 10, pos_x = 0, pos_y = 90, parent = self.__mainbox)
 
@@ -59,8 +65,13 @@ class GraphicalInterface(QMainWindow):
         self.__video_player.stop_stream()
 
     def handle_research(self):
-        print(self.__searchbar.text())
+        my_string = self.__searchbar.text()
         self.__searchbar.clear()
+        print(my_string)
+        if "www.youtube.com/" in my_string:
+            self.__video_player.add_url(my_string)
+        else:
+            print("Search functionnality not implemented yet. Put url please!")
     
     def resizeEvent (self, event):
         print("OLD height: " + str(event.oldSize().height())+ " width: " + str(event.oldSize().width()))
