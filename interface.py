@@ -67,7 +67,8 @@ class GraphicalInterface(QMainWindow):
             self.create_reader()
         self.__footer = GraphicalObject(None, width = 100, height = 10, pos_x = 0, pos_y = 90, parent = self.__mainbox)
 
-        self.__modebox = ComboDemo(self, self.__video_player)
+        self.__modebox = ComboDemo(self, self)
+        self.__modebox.init_combo_box(self.__video_player.get_mode())
         self.__gr_modebox = GraphicalObject(self.__modebox, width = 20, height = 100, pos_x = 80, pos_y = 20, parent = self.__footer)
 
         self.show()
@@ -102,6 +103,17 @@ class GraphicalInterface(QMainWindow):
         self.__video_reader.setAutoFillBackground(True)
 
         self.__gr_video_reader = GraphicalObject(self.__video_reader, width = 80, height = 80, pos_x = 10, pos_y = 10, parent = self.__body)
+        self.__gr_video_reader.resize(0,0)
+
+    def set_player_mode(self, value):
+        self.__video_player.set_mode(value)
+        if value == 'Video':
+            #self.create_reader()
+            self.__gr_video_reader.resize(80,80)
+        else:
+            if self.__video_reader != None and self.__gr_video_reader != None:
+                self.__gr_video_reader.resize(0,0)
+                self.__gr_video_reader.updateObject()
 
 class CommandLineInterface:
     """ 

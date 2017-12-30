@@ -36,7 +36,7 @@ class GraphicalObject():
             self.__pos_y = pos_y
         else: 
             # Add this object to the parent children list 
-            self.__parent.addChildren(self)
+            self.__parent.__add_children(self)
             # Verify percent size is correct (0-100)
             if (not verify(height)) or (not verify(width)):
                 raise ValueError("The size given is not a percent size")
@@ -135,7 +135,11 @@ class GraphicalObject():
         if self.__object != None:
             self.__object.move(self.__pos_x, self.__pos_y)
     
-    def addChildren(self, children):
+    def __add_children(self, children):
         self.__children.append(children)
+
+    def delete_children(self, children):
+        self.__children.remove(children)
+        del children
 
 
