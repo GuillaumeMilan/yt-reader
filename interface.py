@@ -103,17 +103,14 @@ class GraphicalInterface(QMainWindow):
         self.__video_reader.setAutoFillBackground(True)
 
         self.__gr_video_reader = GraphicalObject(self.__video_reader, width = 80, height = 80, pos_x = 10, pos_y = 10, parent = self.__body)
-        self.__gr_video_reader.resize(0,0)
 
     def set_player_mode(self, value):
         self.__video_player.set_mode(value)
         if value == 'Video':
-            #self.create_reader()
-            self.__gr_video_reader.resize(80,80)
+            self.__video_reader.show()
         else:
             if self.__video_reader != None and self.__gr_video_reader != None:
-                self.__gr_video_reader.resize(0,0)
-                self.__gr_video_reader.updateObject()
+                self.__video_reader.hide()
 
 class CommandLineInterface:
     """ 
