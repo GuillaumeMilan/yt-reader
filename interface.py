@@ -15,6 +15,9 @@ class GraphicalInterface(QMainWindow):
         self.__app = QApplication(sys.argv)
         super().__init__()
         self.__video_player = video_player
+# Property of the main window
+        self.__width = 0
+        self.__height = 0
 # List of all derivated object from the following QWidgets 
         self.__palette = None
         self.__logo_image = None
@@ -63,8 +66,10 @@ class GraphicalInterface(QMainWindow):
         self.__gr_logo = GraphicalObject(self.__logo, width = 15, height = 60, pos_x = 0, pos_y = 20, parent = self.__header)
 
         self.__body = GraphicalObject(None, width = 100, height = 80, pos_x = 0, pos_y = 10, parent = self.__mainbox)
-        if self.__video_player.get_mode() == 'Video':
-            self.create_reader()
+        
+        self.create_reader()
+        self.set_player_mode(self.__video_player.get_mode())
+        
         self.__footer = GraphicalObject(None, width = 100, height = 10, pos_x = 0, pos_y = 90, parent = self.__mainbox)
 
         self.__modebox = ComboDemo(self, self)
@@ -84,11 +89,7 @@ class GraphicalInterface(QMainWindow):
         else:
             print("Search functionnality not implemented yet. Put url please!")
     
-    def resizeEvent (self, event):
-        print("OLD height: " + str(event.oldSize().height())+ " width: " + str(event.oldSize().width()))
-        print("NEW height: " + str(event.size().height())+ " width: " + str(event.oldSize().width()))
-        self.__mainbox.resize(event.size().width(), event.size().height())
-    
+        
     def create_reader(self):
         # code from github.com/devos50/vlc-pyqt5-example.git
         if sys.platform == "darwin" :
@@ -109,8 +110,42 @@ class GraphicalInterface(QMainWindow):
         if value == 'Video':
             self.__video_reader.show()
         else:
-            if self.__video_reader != None and self.__gr_video_reader != None:
-                self.__video_reader.hide()
+            self.__video_reader.hide()
+
+# Redefinition of the QMainWindow built-in methods
+
+    def mousePressEvent(self, event):
+        # Left click 
+        if event.button() == 1:
+            if ((event.x() <= (self.__gr_video_reader.getRealWidth()+self.__gr_video_reader.getRealPosX())) and 
+                (event.x() >= self.__gr_video_reader.getRealPosX()) and 
+                (event.y() <= (self.__gr_video_reader.getRealHeight()+self.__gr_video_reader.getRealPosY())) and 
+                (event.y() >= self.__gr_video_reader.getRealPosY())):
+                
+                print("True")
+                if self.__video_player.is_running():
+                    if self.__video_player.is_paused(): 
+                        print("Unpausing the player")
+                        self.__video_player.resume_stream()
+                    elif self.__video_player.is_playing(): 
+                        print("Pausing the player")
+                        self.__video_player.pause_stream()
+                    else: 
+                        print("Playing the stream")
+                        self.__video_player.play_stream()
+                else :
+                    self.__video_player.play_stream()
+
+        print("Plop X "+str(event.x())+" Plop Y "+str(event.y()))
+        print("Glob X "+str(event.globalX())+" Glob Y "+str(event.globalY()))
+        
+    def resizeEvent (self, event):
+        print("OLD height: " + str(event.oldSize().height())+ " width: " + str(event.oldSize().width()))
+        print("NEW height: " + str(event.size().height())+ " width: " + str(event.oldSize().width()))
+        self.__width = event.size().width()
+        self.__height = event.size().height()
+        self.__mainbox.resize(event.size().width(), event.size().height())
+
 
 class CommandLineInterface:
     """ 

@@ -149,6 +149,7 @@ class VideoPlayer(Thread):
             print("----------")
             print(self.__video.title)
             print("----------")
+            return True
 
     def get_current(self):
         return self.__video
