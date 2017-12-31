@@ -10,7 +10,7 @@ except (IOError):
     content.append('Best\n')
     content.append('Audio\n')
 my_player = VideoPlayer(debug=False)
-my_interface = CommandLineInterface(my_player)
+#my_interface = CommandLineInterface(my_player)
 my_interface = GraphicalInterface(my_player)
 #my_player.start()
 my_player.set_quality(content[0][:-1])

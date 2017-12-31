@@ -15,6 +15,8 @@ class GraphicalInterface(QMainWindow):
         self.__app = QApplication(sys.argv)
         super().__init__()
         self.__video_player = video_player
+#TODO get in .config the value of the volume by default 
+        self.__video_player.set_volume(100)
 # Property of the main window
         self.__width = 0
         self.__height = 0
@@ -120,7 +122,8 @@ class GraphicalInterface(QMainWindow):
             if ((event.x() <= (self.__gr_video_reader.getRealWidth()+self.__gr_video_reader.getRealPosX())) and 
                 (event.x() >= self.__gr_video_reader.getRealPosX()) and 
                 (event.y() <= (self.__gr_video_reader.getRealHeight()+self.__gr_video_reader.getRealPosY())) and 
-                (event.y() >= self.__gr_video_reader.getRealPosY())):
+                (event.y() >= self.__gr_video_reader.getRealPosY()) and 
+                self.__video_player.get_mode()=='Video'):
                 
                 print("True")
                 if self.__video_player.is_running():
@@ -131,10 +134,24 @@ class GraphicalInterface(QMainWindow):
                         print("Pausing the player")
                         self.__video_player.pause_stream()
                     else: 
-                        print("Playing the stream")
+                        print("Restarting the stream")
                         self.__video_player.play_stream()
                 else :
+                    print("Launching the stream")
+                    if sys.platform.startswith('linux'): # for Linux using the X Server
+                        self.__video_player.get_player().set_xwindow(self.__video_reader.winId())
+                    elif sys.platform == "win32": # for Windows
+                        self.__video_player.get_player().set_hwnd(self.__video_reader.winId())
+                    elif sys.platform == "darwin": # for MacOS
+                        self.__video_player.get_player().set_nsobject(int(self.__video_reader.winId()))
+#TODO LAPALETTE
                     self.__video_player.play_stream()
+                    if self.__video_player.is_playing():
+                        self.__palette.setColor (QPalette.Window,
+                                   QColor(255,255,255))
+                        self.__video_reader.setPalette(self.__palette)
+                        self.__video_reader.setAutoFillBackground(True)
+
 
         print("Plop X "+str(event.x())+" Plop Y "+str(event.y()))
         print("Glob X "+str(event.globalX())+" Glob Y "+str(event.globalY()))
@@ -203,6 +220,7 @@ class CommandLineInterface:
                 print("    mode <Video,Audio>")
                 print("    set <time in sec>")
                 print("    dl <file_name>")
+                print("    vol <volume>")
             elif commands[0] == "dl":
                 if commands[1] == "current":
                     download_pafy(self.__video_player.get_current(),self.__video_player.get_mode())
