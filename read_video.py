@@ -203,6 +203,7 @@ class VideoPlayer(Thread):
                 if not self.__kill_at_end and self.__interface != None: 
                     if len(self.__following)==0:
                         self.__player.stop()    
+                        self.__interface.end_of_play_list()
                         self.__history.append(self.__video)
                         self.__video = None
                         if self.__debug: 

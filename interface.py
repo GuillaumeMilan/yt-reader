@@ -9,8 +9,11 @@ from graphical_object import GraphicalObject
 import pafy
 import random 
 import string
+class Interface:
+    def end_of_play_list(self):
+        pass 
 
-class GraphicalInterface(QMainWindow):
+class GraphicalInterface(QMainWindow,Interface):
     def __init__(self, video_player):
         self.__app = QApplication(sys.argv)
         super().__init__()
@@ -114,6 +117,13 @@ class GraphicalInterface(QMainWindow):
         else:
             self.__video_reader.hide()
 
+    def end_of_play_list(self):
+        print("End of stream")
+        self.__palette.setColor (QPalette.Window,
+                               QColor(0,0,0))
+        self.__video_reader.setPalette(self.__palette)
+
+
 # Redefinition of the QMainWindow built-in methods
 
     def mousePressEvent(self, event):
@@ -164,7 +174,7 @@ class GraphicalInterface(QMainWindow):
         self.__mainbox.resize(event.size().width(), event.size().height())
 
 
-class CommandLineInterface:
+class CommandLineInterface(Interface):
     """ 
         This class provide a command line interface for the music player
     """
