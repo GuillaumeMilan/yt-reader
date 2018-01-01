@@ -97,7 +97,6 @@ class VideoPlayer(Thread):
         """
         self.__url = url
         self.__video = pafy.new(self.__url)
-        self.__parse_video()
         self.__start_stream()
 
     def is_paused(self): 
@@ -119,7 +118,6 @@ class VideoPlayer(Thread):
         self.__player.stop()
     
     def play_stream(self): 
-        self.__parse_video()
         self.__start_stream()
 
     def set_interface(self,interface):
@@ -167,7 +165,7 @@ class VideoPlayer(Thread):
         if self.__video == None :
             if len(self.__following) == 0:
                 print("No video to play!")
-                return
+                return False
             self.__video = self.__following.pop(0)
         if self.__output == 'Audio': 
             if self.__quality=='Best':
@@ -178,7 +176,7 @@ class VideoPlayer(Thread):
                 url = highest_quality.url
             else :
                 print("Not Yet implemented!")
-                return 
+                return False
         elif self.__output == 'Video':
             if self.__quality == 'Best' : 
                 stream = self.__video.getbest()
@@ -186,11 +184,14 @@ class VideoPlayer(Thread):
                 #Need to be ajusted to make the user able to pause the music
             else:
                 print("Not implemented yet!")
-                return  
+                return False
         self.__player.set_mrl(url)
+        return True
 
     def __start_stream(self):
-        self.__player.play()
+        if self.__parse_video():
+            self.__player.play()
+
     
     def run(self):
         while self.__is_alive:
@@ -214,7 +215,6 @@ class VideoPlayer(Thread):
                     else: 
                         self.__history.append(self.__video)
                         self.__video = None
-                        self.__parse_video()
                         self.__start_stream()
                 else :
                     self.__is_alive = False
