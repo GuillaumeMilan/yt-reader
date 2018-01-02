@@ -57,7 +57,8 @@ class GraphicalInterface(QMainWindow,Interface):
 
         self.__header = GraphicalObject(None, width = 100, height = 10, pos_x = 0, pos_y = 0, parent = self.__mainbox)
 
-        self.__searchbar=QLineEdit(self)
+        self.__searchbar = QLineEdit(self)
+        self.__searchbar.returnPressed.connect(self.handle_research)
         self.__gr_searchbar = GraphicalObject(self.__searchbar, width = 70, height = 60, pos_x = 15, pos_y = 20, parent = self.__header)
 
         self.__searchbtn = QPushButton('Search', self)
@@ -88,7 +89,6 @@ class GraphicalInterface(QMainWindow,Interface):
     def handle_research(self):
         my_string = self.__searchbar.text()
         self.__searchbar.clear()
-        print(my_string)
         if "www.youtube.com/" in my_string:
             self.__video_player.add_url(my_string)
         else:
