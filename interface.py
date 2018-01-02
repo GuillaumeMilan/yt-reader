@@ -45,6 +45,9 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__modebox = None
         self.__logo = None
         self.__video_reader = None
+        self.__previousbtn_audio = None
+        self.__playbtn_audio = None
+        self.__skipbtn_audio = None
 # List of all the GraphicalObject in the main window 
         self.__header = None
         self.__footer = None
@@ -55,6 +58,11 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__gr_modebox = None
         self.__gr_logo = None
         self.__gr_video_reader = None
+        
+        self.__gr_previousbtn_audio = None
+        self.__gr_playbtn_audio = None
+        self.__gr_skipbtn_audio = None
+
         self.__object_list = []
 
         self.__debug = debug
@@ -113,6 +121,7 @@ class GraphicalInterface(QMainWindow,Interface):
         
     def create_reader(self):
         # code from github.com/devos50/vlc-pyqt5-example.git
+        # Video UI
         if sys.platform == "darwin" :
             from PyQt5.QtWidgets import QMacCocoaViewContainer
             self.__video_reader = QMacCocoaViewContainer(0)
@@ -130,12 +139,36 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__videotitle.setWordWrap(True)
         self.__gr_videotitle = GraphicalObject(self.__videotitle, width = 80, height = 10, pos_x = 10, pos_y = 90, parent = self.__body)
 
+        # Audio UI 
+        number_of_button = 3
+        btn_height = 5
+        btn_width = 10
+        ui_origin_x = 30
+        ui_origin_y = 50 - (btn_height/2)
+
+        self.__previousbtn_audio = QPushButton('Previous', self)
+        #clicked.connect(self.handle_research)
+        self.__gr_previousbtn_audio = GraphicalObject(self.__previousbtn_audio, width = btn_width, height = btn_height, pos_x = ui_origin_x+(0*(100-2*ui_origin_x))/number_of_button, pos_y = ui_origin_y, parent = self.__body)
+
+        self.__playbtn_audio = QPushButton('Play', self)
+        self.__playbtn_audio.clicked.connect(self.audio_play_pause)
+        self.__gr_playbtn_audio = GraphicalObject(self.__playbtn_audio, width = btn_width, height = btn_height, pos_x = ui_origin_x+(1*(100-2*ui_origin_x))/number_of_button, pos_y = ui_origin_y, parent = self.__body)
+
+        self.__skipbtn_audio = QPushButton('Skip', self)
+        self.__gr_skipbtn_audio = GraphicalObject(self.__skipbtn_audio, width = btn_width, height = btn_height, pos_x = ui_origin_x+(2*(100-2*ui_origin_x))/number_of_button, pos_y = ui_origin_y, parent = self.__body)
+
     def set_player_mode(self, value):
         self.__video_player.set_mode(value)
         if value == 'Video':
             self.__video_reader.show()
+            self.__previousbtn_audio.hide()
+            self.__playbtn_audio.hide()
+            self.__skipbtn_audio.hide()
         else:
             self.__video_reader.hide()
+            self.__previousbtn_audio.show()
+            self.__playbtn_audio.show()
+            self.__skipbtn_audio.show()
 
     def end_of_play_list(self):
         print("End of stream")
@@ -146,6 +179,26 @@ class GraphicalInterface(QMainWindow,Interface):
     def update_title(self, title):
         self.__videotitle.setText(title)
 
+    def audio_play_pause(self):
+        if self.__video_player.is_running():
+            self.pause_start()
+        else:
+            self.__playbtn_audio.setText('Pause')
+            self.__video_player.play_stream()
+
+    def pause_start(self):
+        if self.__video_player.is_paused(): 
+            print("Unpausing the player")
+            self.__playbtn_audio.setText('Pause')
+            self.__video_player.resume_stream()
+        elif self.__video_player.is_playing(): 
+            print("Pausing the player")
+            self.__playbtn_audio.setText('Play')
+            self.__video_player.pause_stream()
+        else: 
+            print("Restarting the stream")
+            self.__playbtn_audio.setText('Pause')
+            self.__video_player.play_stream()
 
 # Redefinition of the QMainWindow built-in methods
 
@@ -160,15 +213,7 @@ class GraphicalInterface(QMainWindow,Interface):
                 
                 print("True")
                 if self.__video_player.is_running():
-                    if self.__video_player.is_paused(): 
-                        print("Unpausing the player")
-                        self.__video_player.resume_stream()
-                    elif self.__video_player.is_playing(): 
-                        print("Pausing the player")
-                        self.__video_player.pause_stream()
-                    else: 
-                        print("Restarting the stream")
-                        self.__video_player.play_stream()
+                    self.pause_start()
                 else :
                     print("Launching the stream")
                     if sys.platform.startswith('linux'): # for Linux using the X Server
