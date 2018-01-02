@@ -25,7 +25,7 @@ class Interface:
         print("----------")
 
 class GraphicalInterface(QMainWindow,Interface):
-    def __init__(self, video_player):
+    def __init__(self, video_player,debug = False):
         self.__app = QApplication(sys.argv)
         super().__init__()
         self.__video_player = video_player
@@ -56,6 +56,8 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__gr_logo = None
         self.__gr_video_reader = None
         self.__object_list = []
+
+        self.__debug = debug
         
     def main(self):
         """ 
@@ -66,7 +68,7 @@ class GraphicalInterface(QMainWindow,Interface):
         self.setWindowTitle('Youtube Reader')
         self.setWindowIcon(QIcon('resources/icon.svg'))
         content = read_css("./css/main.css")
-        self.setStyleSheet(content)#"QMainWindow {background: 'white';}");
+        self.setStyleSheet(content)
         self.__mainbox = GraphicalObject(self, width = 640, height = 480, pos_x = 0, pos_y = 0)
 
         self.__header = GraphicalObject(None, width = 100, height = 10, pos_x = 0, pos_y = 0, parent = self.__mainbox)
@@ -125,6 +127,7 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__gr_video_reader = GraphicalObject(self.__video_reader, width = 80, height = 80, pos_x = 10, pos_y = 10, parent = self.__body)
 
         self.__videotitle = QLabel("No Video!", self)
+        self.__videotitle.setWordWrap(True)
         self.__gr_videotitle = GraphicalObject(self.__videotitle, width = 80, height = 10, pos_x = 10, pos_y = 90, parent = self.__body)
 
     def set_player_mode(self, value):
