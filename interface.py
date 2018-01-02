@@ -9,9 +9,20 @@ from graphical_object import GraphicalObject
 import pafy
 import random 
 import string
+
+def read_css(fname):
+    with open(fname) as f:
+        content = f.read()
+    return content
+
 class Interface:
     def end_of_play_list(self):
         pass 
+
+    def update_title(self,title):
+        print("----------")
+        print(title)
+        print("----------")
 
 class GraphicalInterface(QMainWindow,Interface):
     def __init__(self, video_player):
@@ -27,6 +38,7 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__palette = None
         self.__logo_image = None
 # List of all the QWidget present in the main window 
+        self.__videotitle = None
         self.__searchbtn = None
         self.__searchbar = None
         self.__mainbox = None
@@ -37,6 +49,7 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__header = None
         self.__footer = None
         self.__body = None
+        self.__gr_videotitle = None
         self.__gr_searchbar = None
         self.__gr_searchbtn = None
         self.__gr_modebox = None
@@ -52,7 +65,8 @@ class GraphicalInterface(QMainWindow,Interface):
         self.move(0, 0)
         self.setWindowTitle('Youtube Reader')
         self.setWindowIcon(QIcon('resources/icon.svg'))
-        self.setStyleSheet("QMainWindow {background: 'white';}");
+        content = read_css("./css/main.css")
+        self.setStyleSheet(content)#"QMainWindow {background: 'white';}");
         self.__mainbox = GraphicalObject(self, width = 640, height = 480, pos_x = 0, pos_y = 0)
 
         self.__header = GraphicalObject(None, width = 100, height = 10, pos_x = 0, pos_y = 0, parent = self.__mainbox)
@@ -73,6 +87,7 @@ class GraphicalInterface(QMainWindow,Interface):
 
         self.__body = GraphicalObject(None, width = 100, height = 80, pos_x = 0, pos_y = 10, parent = self.__mainbox)
         
+
         self.create_reader()
         self.set_player_mode(self.__video_player.get_mode())
         
@@ -93,7 +108,6 @@ class GraphicalInterface(QMainWindow,Interface):
             self.__video_player.add_url(my_string)
         else:
             print("Search functionnality not implemented yet. Put url please!")
-    
         
     def create_reader(self):
         # code from github.com/devos50/vlc-pyqt5-example.git
@@ -110,6 +124,9 @@ class GraphicalInterface(QMainWindow,Interface):
 
         self.__gr_video_reader = GraphicalObject(self.__video_reader, width = 80, height = 80, pos_x = 10, pos_y = 10, parent = self.__body)
 
+        self.__videotitle = QLabel("No Video!", self)
+        self.__gr_videotitle = GraphicalObject(self.__videotitle, width = 80, height = 10, pos_x = 10, pos_y = 90, parent = self.__body)
+
     def set_player_mode(self, value):
         self.__video_player.set_mode(value)
         if value == 'Video':
@@ -122,6 +139,9 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__palette.setColor (QPalette.Window,
                                QColor(0,0,0))
         self.__video_reader.setPalette(self.__palette)
+
+    def update_title(self, title):
+        self.__videotitle.setText(title)
 
 
 # Redefinition of the QMainWindow built-in methods

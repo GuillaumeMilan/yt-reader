@@ -186,6 +186,7 @@ class VideoPlayer(Thread):
                 print("Not implemented yet!")
                 return False
         self.__player.set_mrl(url)
+        self.__interface.update_title(self.__video.title)
         return True
 
     def __start_stream(self):
