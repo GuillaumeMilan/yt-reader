@@ -1,0 +1,20 @@
+options: --nowebm --no3gp --quality[Best] --mode[Audio] --destination[/media/guignomes/ede9030b-3c9b-4f91-b9f0-41f80d0d4ba9/Video]
+
+#The first line of the file must be the options as described previously 
+There is no comment tag if you don't place url in first part of the line, then 
+the line won't be taken in count 
+# https://www.youtube.com/watch?v=zmr2I8caF0c this line is commented because there is a space after the #
+# You can put option after the url such as: Video, Audio, Best, Worst, Medium, 640x360 or 128k
+# Follow these example:
+
+# This example take the default parameters
+https://www.youtube.com/watch?v=zmr2I8caF0c
+
+# This example will be download in Video and in the Worst quality
+https://www.youtube.com/watch?v=zmr2I8caF0c Worst Video
+
+# This example is download in the 640x360 quality in Video. 
+# Care with such parameters. If this quality doesn't exist you may encounter 
+# trouble.
+https://www.youtube.com/watch?v=zmr2I8caF0c Video 640x360
+
