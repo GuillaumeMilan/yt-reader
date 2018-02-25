@@ -2,6 +2,7 @@ import vlc
 import time
 import pafy
 from threading import Thread
+from quality_lib import get_audio_url, get_video_url
 
 class VideoPlayer(Thread): 
     """ This class will create a thread in which the sound and the video will
@@ -164,27 +165,20 @@ class VideoPlayer(Thread):
         url = ""
         if self.__video == None :
             if len(self.__following) == 0:
-                print("No video to play!")
+                print("No video to play!\n")
                 return False
             self.__video = self.__following.pop(0)
         if self.__output == 'Audio': 
-            if self.__quality=='Best':
-                #Play audio 
-                stream = self.__video.audiostreams
-                stream = [s for s in stream if "webm" not in s.extension]
-                highest_quality=max(stream, key=lambda c: int(c.bitrate[:-1]))
-                url = highest_quality.url
-            else :
-                print("Not Yet implemented!")
+            streams = self.__video.audiostreams
+            url = get_audio_url(streams, self.__quality)#TODO unwanted extension
+            if url == "":
                 return False
+
         elif self.__output == 'Video':
-            if self.__quality == 'Best' : 
-                stream = self.__video.getbest()
-                url = stream.url
-                #Need to be ajusted to make the user able to pause the music
-            else:
-                print("Not implemented yet!")
-                return False
+            streams = self.__video.streams
+            url = get_video_url(streams, self.__quality) #TODO unwanted extension
+            #Need to be ajusted to make the user able to pause the music
+        
         self.__player.set_mrl(url)
         self.__interface.update_title(self.__video.title)
         return True
