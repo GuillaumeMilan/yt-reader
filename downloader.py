@@ -6,6 +6,7 @@ import os.path
 import sys
 import string
 from progress_bar import DownloadProgress
+from quality_lib import get_audio_url, get_audio_extension, get_video_url, get_video_extension
 
 valids_chars_in_file = "-_.() %s%s" % (string.ascii_letters, string.digits)
 
@@ -33,34 +34,86 @@ def download_pafy(video=None,mode='Video'):
     except (IOError):
         print("Unable to open the file: "+target_file)
 
+def parse_param(param, cur_mode = 'Video', cur_qual = 'Best'):
+    return {
+            'Video' :    ( 'Video', cur_qual),
+            'Audio' :    ( 'Audio', cur_qual),
+            'Worst' :    (cur_mode, 'Worst'),
+            'Best'  :    (cur_mode, 'Best'),
+            'Medium':    (cur_mode, 'Medium'),
+            ''      :    (cur_mode, cur_qual),
+            }.get(param, (cur_mode, param))
+
 def download(fname,mode='Video'):
     try:
         with open(fname) as f:
             content = f.readlines()
         content = [x.strip("\n") for x in content]
-        for url in content: 
-            video = pafy.new(url)
-            if mode == 'Video':
-                stream = video.getbest()
-            elif mode == 'Audio':
-                stream = video.audiostreams
-                stream = [s for s in stream if "webm" not in s.extension]
-                stream=max(stream, key=lambda c: int(c.bitrate[:-1]))
-            print("----------")
-            print("Downloading "+video.title)
-            try:
-                print(stream)
-                target_file = video.title+"."+stream.extension
-                target_file = ''.join(c for c in target_file if c in valids_chars_in_file)
-                output = wget.download(stream.url, out="downloads/"+target_file, bar=None)
-                #progress_bar = DownloadProgress("downloads/"+target_file, stream.url)
-                #progress_bar.start()
-                #urllib.request.urlretrieve(stream.url,"downloads/"+target_file)
-                #progress_bar.join()
+        unwanted_type = []
+        default_mode = mode
+        default_qual = 'Best'
+        destination_folder = "downloads/"
+
+        #Parse options
+        splited_line = content[0].split(" ")
+        if splited_line[0] == "options:":
+            content = content[1:]
+            for i in splited_line[1:] :
+                if i == "--nowebm":
+                    unwanted_type.append("webm")
+                elif i == "--no3gp":
+                    unwanted_type.append("3gp")
+                elif i == "--nom4a":
+                    unwanted_type.append("m4a")
+                elif i == "--nomp4":
+                    unwanted_type.append("mp4")
+                elif i[:10] == "--quality[" and i[-1]==']':
+                    default_qual = i[10:-1]
+                elif i[:7] == "--mode[" and i[-1]==']':
+                    default_mode = i[7:-1]
+                elif i[:14] == "--destination[" and i[-1]==']':
+                    destination_folder = i[14:-1]
+                    if not destination_folder[-1]=='/':
+                        destination_folder+='/'
+
+        for line in content: 
+            #Variable definition
+            local_mode = default_mode
+            local_qual = default_qual
+            file_link = ""
+            file_extension=""
+            
+            splited_line = line.split(" ")
+            url = splited_line[0]
+            if ("www.youtube.com/watch?v=" in url):
+                #get the url and parameters
+                for param in splited_line[1:]:
+                    (local_mode, local_qual) = parse_param(param, local_mode, local_qual)
+
+                video = pafy.new(url)
+                print("MODE-QUAL:"+local_mode+", "+local_qual)
+                if local_mode == 'Video':
+                    file_link = get_video_url(video.streams, local_qual, unwanted_type)
+                    file_extension = get_video_extension(video.streams, local_qual, unwanted_type)
+                elif local_mode == 'Audio':
+                    file_link = get_audio_url(video.audiostreams, local_qual, unwanted_type)
+                    file_extension = get_audio_extension(video.audiostreams, local_qual, unwanted_type)
+
                 print("----------")
-                #del progress_bar
-            except (IOError):
-                print("Unable to open the file: "+target_file)
+                print("Downloading "+video.title)
+                try:
+                    target_file = video.title+"."+file_extension
+                    target_file = ''.join(c for c in target_file if c in valids_chars_in_file)
+                    print("FILE: "+destination_folder+target_file)
+                    output = wget.download(file_link, out=destination_folder+target_file, bar=None)
+                    #progress_bar = DownloadProgress("downloads/"+target_file, stream.url)
+                    #progress_bar.start()
+                    #urllib.request.urlretrieve(stream.url,"downloads/"+target_file)
+                    #progress_bar.join()
+                    print("----------")
+                    #del progress_bar
+                except (IOError):
+                    print("Unable to open the file: "+target_file)
     except (IOError):
         print("No such file: "+fname)
         return 

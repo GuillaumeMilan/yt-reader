@@ -1,6 +1,7 @@
 import vlc
 import time
 import pafy
+import urllib.parse
 from threading import Thread
 from quality_lib import get_audio_url, get_video_url
 
@@ -179,7 +180,7 @@ class VideoPlayer(Thread):
             url = get_video_url(streams, self.__quality) #TODO unwanted extension
             #Need to be ajusted to make the user able to pause the music
         
-        self.__player.set_mrl(url)
+        self.__player.set_mrl(urllib.parse.unquote(url))
         self.__interface.update_title(self.__video.title)
         return True
 
