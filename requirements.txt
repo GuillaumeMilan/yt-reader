@@ -2,4 +2,3 @@ python-vlc
 youtube-dl
 pafy
 selenium
-median
