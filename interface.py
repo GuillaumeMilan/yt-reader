@@ -2,6 +2,7 @@ import sys,os
 from downloader import download
 from downloader import download_pafy
 from combo_box import ComboDemo
+from translucid_button import TranslucidButton
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QLineEdit
 from PyQt5.QtWidgets import QPushButton, QLabel, QFrame
 from PyQt5.QtGui import QIcon, QPixmap, QPalette, QColor
@@ -25,7 +26,7 @@ class Interface:
         print("----------")
 
 class GraphicalInterface(QMainWindow,Interface):
-    def __init__(self, video_player,debug = False):
+    def __init__(self, video_player, debug = False):
         self.__app = QApplication(sys.argv)
         super().__init__()
         self.__video_player = video_player
@@ -37,6 +38,10 @@ class GraphicalInterface(QMainWindow,Interface):
 # List of all derivated object from the following QWidgets 
         self.__palette = None
         self.__logo_image = None
+        self.__previousbtn_image = None
+        self.__skipbtn_image = None
+        self.__playbtn_image = None
+        self.__pausebtn_image = None
 # List of all the QWidget present in the main window 
         self.__videotitle = None
         self.__searchbtn = None
@@ -48,6 +53,10 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__previousbtn_audio = None
         self.__playbtn_audio = None
         self.__skipbtn_audio = None
+        self.__previousbtn_video = None
+        self.__playbtn_video = None
+        self.__skipbtn_video = None
+        self.__buttonbar_video = None
 # List of all the GraphicalObject in the main window 
         self.__header = None
         self.__footer = None
@@ -58,10 +67,14 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__gr_modebox = None
         self.__gr_logo = None
         self.__gr_video_reader = None
+        self.__gr_buttonbar_video = None
         
         self.__gr_previousbtn_audio = None
         self.__gr_playbtn_audio = None
         self.__gr_skipbtn_audio = None
+        self.__gr_previousbtn_video = None
+        self.__gr_playbtn_video = None
+        self.__gr_skipbtn_video = None
 
         self.__object_list = []
 
@@ -138,6 +151,35 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__videotitle = QLabel("No Video!", self)
         self.__videotitle.setWordWrap(True)
         self.__gr_videotitle = GraphicalObject(self.__videotitle, width = 80, height = 10, pos_x = 10, pos_y = 90, parent = self.__body)
+        
+
+        number_of_button = 3
+        btn_height = 7
+        btn_width = 7
+        ui_origin_x = 0
+        ui_origin_y = 100 - btn_height
+        self.__buttonbar_video = QLabel(self)
+        self.__buttonbar_video.setStyleSheet("QLabel { background-color : white; color : blue; }");
+        self.__gr_buttonbar_video = GraphicalObject(self.__buttonbar_video, width = 100, height = btn_height, pos_x = 0, pos_y = ui_origin_y, parent = self.__gr_video_reader)
+
+        self.__previousbtn_video = TranslucidButton(self)
+        self.__previousbtn_image = QPixmap('resources/back.svg')
+        self.__previousbtn_video.setScaledContents(True)
+        self.__previousbtn_video.setPixmap(self.__previousbtn_image)
+        self.__gr_previousbtn_video = GraphicalObject(self.__previousbtn_video, width = btn_width, height = btn_height, pos_x = ui_origin_x+0*btn_width, pos_y = ui_origin_y, parent = self.__gr_video_reader)
+
+        self.__skipbtn_video = TranslucidButton(self)
+        self.__skipbtn_image = QPixmap('resources/skip.svg')
+        self.__skipbtn_video.setScaledContents(True)
+        self.__skipbtn_video.setPixmap(self.__skipbtn_image)
+        self.__gr_skipbtn_video = GraphicalObject(self.__skipbtn_video, width = btn_width, height = btn_height, pos_x = ui_origin_x+2*btn_width, pos_y = ui_origin_y, parent = self.__gr_video_reader)
+
+        self.__playbtn_video = TranslucidButton(self)
+        self.__playbtn_video.clicked.connect(self.video_play_pause)
+        self.__playbtn_image = QPixmap('resources/play.svg')
+        self.__playbtn_video.setScaledContents(True)
+        self.__playbtn_video.setPixmap(self.__playbtn_image)
+        self.__gr_playbtn_video = GraphicalObject(self.__playbtn_video, width = btn_width, height = btn_height, pos_x = ui_origin_x+1*btn_width, pos_y = ui_origin_y, parent = self.__gr_video_reader)
 
         # Audio UI 
         number_of_button = 3
@@ -155,6 +197,7 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__gr_playbtn_audio = GraphicalObject(self.__playbtn_audio, width = btn_width, height = btn_height, pos_x = ui_origin_x+(1*(100-2*ui_origin_x))/number_of_button, pos_y = ui_origin_y, parent = self.__body)
 
         self.__skipbtn_audio = QPushButton('Skip', self)
+        self.__skipbtn_audio.clicked.connect(self.__video_player.skip)
         self.__gr_skipbtn_audio = GraphicalObject(self.__skipbtn_audio, width = btn_width, height = btn_height, pos_x = ui_origin_x+(2*(100-2*ui_origin_x))/number_of_button, pos_y = ui_origin_y, parent = self.__body)
 
     def set_player_mode(self, value):
@@ -185,6 +228,28 @@ class GraphicalInterface(QMainWindow,Interface):
         else:
             self.__playbtn_audio.setText('Pause')
             self.__video_player.play_stream()
+
+    def video_play_pause(self):
+        print("Play pause")
+        if self.__video_player.is_running():
+            self.pause_start()
+        else :
+            print("Launching the stream")
+            if sys.platform.startswith('linux'): # for Linux using the X Server
+                self.__video_player.get_player().set_xwindow(self.__video_reader.winId())
+            elif sys.platform == "win32": # for Windows
+                self.__video_player.get_player().set_hwnd(self.__video_reader.winId())
+            elif sys.platform == "darwin": # for MacOS
+                self.__video_player.get_player().set_nsobject(int(self.__video_reader.winId()))
+#TODO LAPALETTE
+            self.__video_player.play_stream()
+            if self.__video_player.is_playing():
+                self.__palette.setColor (QPalette.Window,
+                           QColor(255,255,255))
+                self.__video_reader.setPalette(self.__palette)
+                self.__video_reader.setAutoFillBackground(True)
+
+
 
     def pause_start(self):
         if self.__video_player.is_paused(): 
@@ -246,7 +311,7 @@ class CommandLineInterface(Interface):
     """ 
         This class provide a command line interface for the music player
     """
-    def __init__(self, video_player): 
+    def __init__(self, video_player, debug=False): 
 #define the currently playing video url 
         self.__url = "" 
 #define the player to use for this interface 
@@ -255,6 +320,7 @@ class CommandLineInterface(Interface):
         self.__urls = []
 #define if the user ask to quit the command line 
         self.__continue = True
+
     def set_next_music(self): 
         self.__video_player.skip()
 

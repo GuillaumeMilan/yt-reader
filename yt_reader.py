@@ -11,7 +11,7 @@ except (IOError):
     content.append('Audio\n')
 my_player = VideoPlayer(debug=False)
 #my_interface = CommandLineInterface(my_player)
-my_interface = GraphicalInterface(my_player,debug = False)
+my_interface = CommandLineInterface(my_player,debug = False)
 my_player.start()
 my_player.set_quality(content[0][:-1])
 my_player.set_mode(content[1][:-1])
