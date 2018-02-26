@@ -106,9 +106,18 @@ def download(fname,mode='Video'):
                         print("We didn't found a video corresponding to your requirement!")
                         print("Do you want to skip?(y/n)")
                         command = input()
-                        if command = "y":
+                        if command == "y" :
                             passed = True
-                            failed = False
+                            failed = True
+                        else :
+                            print("Current parameters: "+local_mode+", "+local_qual)
+                            print("Set your new parameter: ")
+                            command = input()
+                            command = command.split(" ")
+                            print(command)
+                            for i in command:
+                                (local_mode, local_qual) = parse_param(i, local_mode, local_qual)
+
                 print("----------")
                 print("Downloading "+video.title)
                 if not failed:
@@ -125,8 +134,10 @@ def download(fname,mode='Video'):
                         #del progress_bar
                     except (IOError):
                         print("Unable to open the file: "+target_file)
-                else 
+                else :
+                    print("Aborted!")
                     print(video.watchv_url)
+                    print("----------")
     except (IOError):
         print("No such file: "+fname)
         return 
