@@ -92,28 +92,41 @@ def download(fname,mode='Video'):
 
                 video = pafy.new(url)
                 print("MODE-QUAL:"+local_mode+", "+local_qual)
-                if local_mode == 'Video':
-                    file_link = get_video_url(video.streams, local_qual, unwanted_type)
-                    file_extension = get_video_extension(video.streams, local_qual, unwanted_type)
-                elif local_mode == 'Audio':
-                    file_link = get_audio_url(video.audiostreams, local_qual, unwanted_type)
-                    file_extension = get_audio_extension(video.audiostreams, local_qual, unwanted_type)
-
+                passed = False
+                while not passed:
+                    if local_mode == 'Video':
+                        file_link = get_video_url(video.streams, local_qual, unwanted_type)
+                        file_extension = get_video_extension(video.streams, local_qual, unwanted_type)
+                    elif local_mode == 'Audio':
+                        file_link = get_audio_url(video.audiostreams, local_qual, unwanted_type)
+                        file_extension = get_audio_extension(video.audiostreams, local_qual, unwanted_type)
+                    passed = file_link != "" and file_extension != ""
+                    failed = False
+                    if not passed : 
+                        print("We didn't found a video corresponding to your requirement!")
+                        print("Do you want to skip?(y/n)")
+                        command = input()
+                        if command = "y":
+                            passed = True
+                            failed = False
                 print("----------")
                 print("Downloading "+video.title)
-                try:
-                    target_file = video.title+"."+file_extension
-                    target_file = ''.join(c for c in target_file if c in valids_chars_in_file)
-                    print("FILE: "+destination_folder+target_file)
-                    output = wget.download(file_link, out=destination_folder+target_file, bar=None)
-                    #progress_bar = DownloadProgress("downloads/"+target_file, stream.url)
-                    #progress_bar.start()
-                    #urllib.request.urlretrieve(stream.url,"downloads/"+target_file)
-                    #progress_bar.join()
-                    print("----------")
-                    #del progress_bar
-                except (IOError):
-                    print("Unable to open the file: "+target_file)
+                if not failed:
+                    try:
+                        target_file = video.title+"."+file_extension
+                        target_file = ''.join(c for c in target_file if c in valids_chars_in_file)
+                        print("FILE: "+destination_folder+target_file)
+                        output = wget.download(file_link, out=destination_folder+target_file, bar=None)
+                        #progress_bar = DownloadProgress("downloads/"+target_file, stream.url)
+                        #progress_bar.start()
+                        #urllib.request.urlretrieve(stream.url,"downloads/"+target_file)
+                        #progress_bar.join()
+                        print("----------")
+                        #del progress_bar
+                    except (IOError):
+                        print("Unable to open the file: "+target_file)
+                else 
+                    print(video.watchv_url)
     except (IOError):
         print("No such file: "+fname)
         return 
