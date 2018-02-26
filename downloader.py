@@ -44,6 +44,14 @@ def parse_param(param, cur_mode = 'Video', cur_qual = 'Best'):
             ''      :    (cur_mode, cur_qual),
             }.get(param, (cur_mode, param))
 
+def print_video_info(video):
+    print("Video streams:")
+    stream_list = [i.quality+" "+i.extension for i in video.streams]
+    print(stream_list)
+    print("Audio streams:")
+    stream_list = [i.quality+" "+i.extension for i in video.audiostreams]
+    print(stream_list)
+
 def download(fname,mode='Video'):
     try:
         with open(fname) as f:
@@ -110,6 +118,7 @@ def download(fname,mode='Video'):
                             failed = True
                         else :
                             print("Current parameters: "+local_mode+", "+local_qual)
+                            print_video_info(video)
                             print("Set your new parameter: ")
                             command = input()
                             command = command.split(" ")

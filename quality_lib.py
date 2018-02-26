@@ -39,7 +39,7 @@ def get_video_url(streams, quality, unwanted_extension = ["webm","3gp"]):
         lowest_quality=stream[0]
         return lowest_quality.url
     elif quality == 'Medium':
-        medium_quality=stream[len(stream)/2]
+        medium_quality=stream[int(len(stream)/2)]
         return medium_quality.url
     else :
         #TODO improve to find the closest quality
