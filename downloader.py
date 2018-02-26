@@ -91,7 +91,6 @@ def download(fname,mode='Video'):
                     (local_mode, local_qual) = parse_param(param, local_mode, local_qual)
 
                 video = pafy.new(url)
-                print("MODE-QUAL:"+local_mode+", "+local_qual)
                 passed = False
                 while not passed:
                     if local_mode == 'Video':
@@ -124,7 +123,6 @@ def download(fname,mode='Video'):
                     try:
                         target_file = video.title+"."+file_extension
                         target_file = ''.join(c for c in target_file if c in valids_chars_in_file)
-                        print("FILE: "+destination_folder+target_file)
                         output = wget.download(file_link, out=destination_folder+target_file, bar=None)
                         #progress_bar = DownloadProgress("downloads/"+target_file, stream.url)
                         #progress_bar.start()
