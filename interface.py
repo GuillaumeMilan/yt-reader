@@ -207,8 +207,7 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__drop_area = DropLabel('Drop Here!', self)
         drop_area_css = read_css("./css/drop_area.css")
         self.__drop_area.setStyleSheet(drop_area_css)
-
-        self.__gr_drop_area = GraphicalObject(self.__drop_area, width = 80, height = 10, pos_x = 10, pos_y = 45, parent = self.__body)
+        self.__gr_drop_area = GraphicalObject(self.__drop_area, width = 80, height = 30, pos_x = 10, pos_y = 25, parent = self.__body)
 
 
 
