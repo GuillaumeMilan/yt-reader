@@ -1,7 +1,8 @@
 import sys,os
 from downloader import download
 from downloader import download_pafy
-from combo_box import ComboDemo
+from combo_box import ComboMode
+from drop_label import DropLabel
 from translucid_button import TranslucidButton
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QLineEdit
 from PyQt5.QtWidgets import QPushButton, QLabel, QFrame
@@ -37,6 +38,7 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__height = 0
 # List of all derivated object from the following QWidgets 
         self.__palette = None
+        self.__drop_color = None
         self.__logo_image = None
         self.__previousbtn_image = None
         self.__skipbtn_image = None
@@ -57,6 +59,7 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__playbtn_video = None
         self.__skipbtn_video = None
         self.__buttonbar_video = None
+        self.__drop_area = None
 # List of all the GraphicalObject in the main window 
         self.__header = None
         self.__footer = None
@@ -75,6 +78,7 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__gr_previousbtn_video = None
         self.__gr_playbtn_video = None
         self.__gr_skipbtn_video = None
+        self.__gr_drop_area = None
 
         self.__object_list = []
 
@@ -116,7 +120,7 @@ class GraphicalInterface(QMainWindow,Interface):
         
         self.__footer = GraphicalObject(None, width = 100, height = 10, pos_x = 0, pos_y = 90, parent = self.__mainbox)
 
-        self.__modebox = ComboDemo(self, self)
+        self.__modebox = ComboMode(self, self)
         self.__modebox.init_combo_box(self.__video_player.get_mode())
         self.__gr_modebox = GraphicalObject(self.__modebox, width = 20, height = 100, pos_x = 80, pos_y = 20, parent = self.__footer)
 
@@ -200,18 +204,45 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__skipbtn_audio.clicked.connect(self.__video_player.skip)
         self.__gr_skipbtn_audio = GraphicalObject(self.__skipbtn_audio, width = btn_width, height = btn_height, pos_x = ui_origin_x+(2*(100-2*ui_origin_x))/number_of_button, pos_y = ui_origin_y, parent = self.__body)
 
+        self.__drop_area = DropLabel('Drop Here!', self)
+        drop_area_css = read_css("./css/drop_area.css")
+        self.__drop_area.setStyleSheet(drop_area_css)
+
+        self.__gr_drop_area = GraphicalObject(self.__drop_area, width = 80, height = 10, pos_x = 10, pos_y = 45, parent = self.__body)
+
+
+
     def set_player_mode(self, value):
-        self.__video_player.set_mode(value)
         if value == 'Video':
+            self.__video_player.set_mode(value)
             self.__video_reader.show()
+
             self.__previousbtn_audio.hide()
             self.__playbtn_audio.hide()
             self.__skipbtn_audio.hide()
-        else:
+
+            self.__drop_area.hide()
+
+        elif value == 'Audio':
+            self.__video_player.set_mode(value)
             self.__video_reader.hide()
+
             self.__previousbtn_audio.show()
             self.__playbtn_audio.show()
             self.__skipbtn_audio.show()
+
+            self.__drop_area.hide()
+
+        elif value == 'Download':
+            self.__video_reader.hide()
+            self.__video_reader.hide()
+
+            self.__previousbtn_audio.hide()
+            self.__playbtn_audio.hide()
+            self.__skipbtn_audio.hide()
+
+            self.__drop_area.show()
+
 
     def end_of_play_list(self):
         print("End of stream")

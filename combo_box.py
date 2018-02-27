@@ -1,12 +1,12 @@
 from PyQt5.QtWidgets import QComboBox, QWidget, QHBoxLayout
 
-class ComboDemo(QWidget):
+class ComboMode(QWidget):
    def __init__(self, parent = None, interface = None):
-      super(ComboDemo, self).__init__(parent)
+      super(ComboMode, self).__init__(parent)
       self.__interface = interface
       layout = QHBoxLayout()
       self.cb = QComboBox()
-      self.cb.addItems(['Audio', 'Video'])
+      self.cb.addItems(['Audio', 'Video','Download'])
       self.cb.currentIndexChanged.connect(self.selectionchange)
 
       layout.addWidget(self.cb)
