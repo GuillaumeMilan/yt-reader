@@ -1,0 +1,6 @@
+QLabel 
+{
+    background-color : #e6e6fa;
+    border : 3px dashed black;
+    qproperty-alignment : AlignCenter;
+}
