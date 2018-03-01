@@ -4,6 +4,7 @@ import pafy
 
 def void():
     pass
+
 def update_duration(param):
     # param = [[duration], url]
     video = pafy.new(param[1])
@@ -16,7 +17,7 @@ class DropLabel(QLabel):
         self.setAcceptDrops(True)
         self.__download_list = []
         self.__event_function = void
-        self.__duration = 0
+        self.__duration = [0]
         self.__threader = Threader()
         self.__threader.start()
 
@@ -30,8 +31,7 @@ class DropLabel(QLabel):
         self.setText(e.mimeData().text())
         self.__event_function()
         self.__download_list.append([e.mimeData().text()])
-        video = pafy.new(self.__download_list[-1][0])
-        self.__duration += video.length
+        self.__threader.addInstruction([update_duration, 0, self.__duration, self.__download_list[-1][0]])
         print("New list element: "+self.__download_list[-1][0])
         print("New durantion :"+str(self.__duration))
 
