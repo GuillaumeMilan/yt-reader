@@ -1,8 +1,13 @@
 from PyQt5.QtWidgets import QLabel
+from thread_lib import Threader
 import pafy
 
 def void():
     pass
+def update_duration(param):
+    # param = [[duration], url]
+    video = pafy.new(param[1])
+    param[0][0] = param[0][0] + video.length
 
 class DropLabel(QLabel):
 
@@ -12,6 +17,8 @@ class DropLabel(QLabel):
         self.__download_list = []
         self.__event_function = void
         self.__duration = 0
+        self.__threader = Threader()
+        self.__threader.start()
 
     def dragEnterEvent(self, e):
         if e.mimeData().hasFormat('text/plain'):

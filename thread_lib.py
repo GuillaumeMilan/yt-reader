@@ -6,6 +6,7 @@ from threading import Event
 # Each operation will be done time by time
 # The instruction format is:
 #     inst = [func, is_finished, param, ...]
+# with func = def func([param]):
 # Instruction must be unique
 # While the instruction isn't started to execute the is_finshed = -1
 # During execution of the function, is_finished = 0
