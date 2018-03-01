@@ -48,7 +48,8 @@ class Threader(Thread):
             while(len(self.__instructions) != 0):
                 self.__is_running = True
                 instruction = self.__instructions.pop(0)
-                self.__exec(instruction)        
+                self.__exec(instruction)
+            self.__pause.clear()
             self.__pause.wait(100)
         self.__is_running = False
 
