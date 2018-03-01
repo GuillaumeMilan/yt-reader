@@ -1,4 +1,5 @@
 from threading import Thread
+from threading import Event 
 ################################################################################
 # DESCRIPTION:
 # This class allow you to thread multiple operations called instruction
@@ -17,10 +18,12 @@ class Threader(Thread):
         Thread.__init__(self)
         self.__instructions = []
         self.__is_running = False
+        self.__pause = Event()
 
     def addInstruction(self, instruction):
         instruction[1] = -1
         self.__instructions.append(instruction)
+        self.__pause.set()
 
     def cancelInstruction(self, instruction):
         for i in range(len(self.__instructions)):
@@ -40,9 +43,12 @@ class Threader(Thread):
         inst[1] = 1
 
     def run(self):
-        self.__is_running = True
-        while(len(self.__instructions) != 0):
-            instruction = self.__instructions.pop(0)
-            self.__exec(instruction)        
+        self.__pause.clear()
+        while (1):
+            while(len(self.__instructions) != 0):
+                self.__is_running = True
+                instruction = self.__instructions.pop(0)
+                self.__exec(instruction)        
+            self.__pause.wait(100)
         self.__is_running = False
 
