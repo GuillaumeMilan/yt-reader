@@ -21,10 +21,10 @@ class DropLabel(QLabel):
 
     def dropEvent(self, e):
         self.setText(e.mimeData().text())
+        self.__event_function()
         self.__download_list.append([e.mimeData().text()])
         video = pafy.new(self.__download_list[-1][0])
         self.__duration += video.length
-        self.__event_function()
         print("New list element: "+self.__download_list[-1][0])
         print("New durantion :"+str(self.__duration))
 

@@ -205,6 +205,7 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__gr_skipbtn_audio = GraphicalObject(self.__skipbtn_audio, width = btn_width, height = btn_height, pos_x = ui_origin_x+(2*(100-2*ui_origin_x))/number_of_button, pos_y = ui_origin_y, parent = self.__body)
 
         self.__drop_area = DropLabel('Drop Here!', self)
+
         drop_area_css = read_css("./css/drop_area.css")
         self.__drop_area.setStyleSheet(drop_area_css)
         self.__gr_drop_area = GraphicalObject(self.__drop_area, width = 80, height = 30, pos_x = 10, pos_y = 25, parent = self.__body)
