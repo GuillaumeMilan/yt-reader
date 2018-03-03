@@ -219,7 +219,7 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__playlist_time.setWordWrap(True)
         playlist_time_css = read_css("./css/drop_area.css")
         self.__playlist_time.setStyleSheet(playlist_time_css)
-        self.__gr_playlist_time = GraphicalObject(self.__playlist_time, width = 40, height = 40, pos_x = 60, pos_y = 0, parent = self.__gr_drop_area)
+        self.__gr_playlist_time = GraphicalObject(self.__playlist_time, width = 60, height = 40, pos_x = 40, pos_y = 0, parent = self.__gr_drop_area)
         self.__playlist_time.raise_()
 
 

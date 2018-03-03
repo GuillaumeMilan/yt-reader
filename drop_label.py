@@ -5,6 +5,18 @@ import pafy
 def void(none):
     pass
 
+def two_digit(value):
+    if value<10 and value>=0:
+        return "0"+str(value)
+    else:
+        return str(value)
+
+def format_time(time):
+    if time >= 3600:
+        return str(int(time/3600))+":"+two_digit(int((time % 3600)/60))+":"+two_digit(time % 60)
+    else :
+        return str(int((time % 3600)/60))+":"+two_digit(time % 60)
+
 def update_duration(param):
     # param = [[duration], url]
     video = pafy.new(param[1])
@@ -25,7 +37,7 @@ class VideoDropLabel(QLabel):
     
     def updateTimeLabel(self, none):
         if self.__time_label != None:
-            self.__time_label.setText(str(self.__duration[0]))
+            self.__time_label.setText("Playlist duration: "+format_time(self.__duration[0]))
 
     def dragEnterEvent(self, e):
         if e.mimeData().hasFormat('text/plain'):

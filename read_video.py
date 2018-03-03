@@ -63,16 +63,16 @@ class VideoPlayer(Thread):
         self.__player.audio_set_volume(value)
 
     def __two_digit(self,value):
-        if value<10 and value>0:
+        if value<10 and value>=0:
             return "0"+str(value)
         else:
             return str(value)
 
     def __hour(self,in_second):
         if in_second/3600 != 0:
-            return str(in_second/3600)+":"+self.__two_digit((in_second % 3600)/60)+":"+self.__two_digit(in_second % 60)
+            return str(int(in_second/3600))+":"+self.__two_digit(int((in_second % 3600)/60))+":"+self.__two_digit(in_second % 60)
         else:
-            return str((in_second % 3600)/60)+":"+self.__two_digit(in_second % 60)
+            return str(int((in_second % 3600)/60))+":"+self.__two_digit(int(in_second % 60))
     
     def get_time(self): 
         if self.__video == None:
