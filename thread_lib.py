@@ -5,12 +5,12 @@ from threading import Event
 # This class allow you to thread multiple operations called instruction
 # Each operation will be done time by time
 # The instruction format is:
-#     inst = [func, is_finished, param, ...]
+#     inst = [long_func, start_func, end_func, start_param, param, end_param]
 # with func = def func([param]):
-# Instruction must be unique
-# While the instruction isn't started to execute the is_finshed = -1
-# During execution of the function, is_finished = 0
-# After the end of the executionm is_finished = 1
+# every time a new instruction is executed we got the following scheduling
+#    1 - start_func(start_param)
+#    2 - long_func(param)
+#    3 - end_func(param)
 ################################################################################
 
 
@@ -22,7 +22,6 @@ class Threader(Thread):
         self.__pause = Event()
 
     def addInstruction(self, instruction):
-        instruction[1] = -1
         self.__instructions.append(instruction)
         self.__pause.set()
 
@@ -32,16 +31,14 @@ class Threader(Thread):
                 del self.__instructions[i]
                 break
 
-    def isRunning():
+    def isRunning(self):
         return self.__is_running
 
     def __exec(self, inst):
-        inst[1] = 0
+        inst[1](inst[3])
 # This is a trick to update correctly the instruction
-        param = inst[2:]
-        inst[0](param)
-        inst[2:] = param
-        inst[1] = 1
+        inst[0](inst[4])
+        inst[2](inst[5])
 
     def run(self):
         self.__pause.clear()

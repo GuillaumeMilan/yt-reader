@@ -2,7 +2,7 @@ import sys,os
 from downloader import download
 from downloader import download_pafy
 from combo_box import ComboMode
-from drop_label import DropLabel
+from drop_label import VideoDropLabel
 from translucid_button import TranslucidButton
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QLineEdit
 from PyQt5.QtWidgets import QPushButton, QLabel, QFrame
@@ -60,6 +60,7 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__skipbtn_video = None
         self.__buttonbar_video = None
         self.__drop_area = None
+        self.__playlist_time = None
 # List of all the GraphicalObject in the main window 
         self.__header = None
         self.__footer = None
@@ -79,6 +80,7 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__gr_playbtn_video = None
         self.__gr_skipbtn_video = None
         self.__gr_drop_area = None
+        self.__gr_playlist_time = None
 
         self.__object_list = []
 
@@ -204,12 +206,21 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__skipbtn_audio.clicked.connect(self.__video_player.skip)
         self.__gr_skipbtn_audio = GraphicalObject(self.__skipbtn_audio, width = btn_width, height = btn_height, pos_x = ui_origin_x+(2*(100-2*ui_origin_x))/number_of_button, pos_y = ui_origin_y, parent = self.__body)
 
-        self.__drop_area = DropLabel('Drop Here!', self)
+# Need to be put before drop area to link it 
+        self.__playlist_time = QLabel("0", self)
+
+        self.__drop_area = VideoDropLabel('Drop Here!', self, self.__playlist_time)
 
         drop_area_css = read_css("./css/drop_area.css")
         self.__drop_area.setStyleSheet(drop_area_css)
         self.__gr_drop_area = GraphicalObject(self.__drop_area, width = 80, height = 30, pos_x = 10, pos_y = 25, parent = self.__body)
 
+# End of the playlist time label definition
+        self.__playlist_time.setWordWrap(True)
+        playlist_time_css = read_css("./css/drop_area.css")
+        self.__playlist_time.setStyleSheet(playlist_time_css)
+        self.__gr_playlist_time = GraphicalObject(self.__playlist_time, width = 40, height = 40, pos_x = 60, pos_y = 0, parent = self.__gr_drop_area)
+        self.__playlist_time.raise_()
 
 
     def set_player_mode(self, value):
@@ -222,6 +233,7 @@ class GraphicalInterface(QMainWindow,Interface):
             self.__skipbtn_audio.hide()
 
             self.__drop_area.hide()
+            self.__playlist_time.hide()
 
         elif value == 'Audio':
             self.__video_player.set_mode(value)
@@ -232,6 +244,7 @@ class GraphicalInterface(QMainWindow,Interface):
             self.__skipbtn_audio.show()
 
             self.__drop_area.hide()
+            self.__playlist_time.hide()
 
         elif value == 'Download':
             self.__video_reader.hide()
@@ -241,6 +254,7 @@ class GraphicalInterface(QMainWindow,Interface):
             self.__playbtn_audio.hide()
             self.__skipbtn_audio.hide()
 
+            self.__playlist_time.show()
             self.__drop_area.show()
 
 
