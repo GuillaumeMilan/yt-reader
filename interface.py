@@ -124,6 +124,8 @@ class GraphicalInterface(QMainWindow,Interface):
 
         self.__modebox = ComboMode(self, self)
         self.__modebox.init_combo_box(self.__video_player.get_mode())
+        modebox_css = read_css("./css/combo_box.css")
+        self.__modebox.setStyleSheet(modebox_css)
         self.__gr_modebox = GraphicalObject(self.__modebox, width = 20, height = 100, pos_x = 80, pos_y = 20, parent = self.__footer)
 
         self.show()
@@ -227,6 +229,11 @@ class GraphicalInterface(QMainWindow,Interface):
         if value == 'Video':
             self.__video_player.set_mode(value)
             self.__video_reader.show()
+            self.__skipbtn_video.show()
+            self.__previousbtn_video.show()
+            self.__playbtn_video.show()
+            self.__videotitle.show()
+            
 
             self.__previousbtn_audio.hide()
             self.__playbtn_audio.hide()
@@ -238,6 +245,10 @@ class GraphicalInterface(QMainWindow,Interface):
         elif value == 'Audio':
             self.__video_player.set_mode(value)
             self.__video_reader.hide()
+            self.__skipbtn_video.hide()
+            self.__previousbtn_video.hide()
+            self.__playbtn_video.hide()
+            self.__videotitle.show()
 
             self.__previousbtn_audio.show()
             self.__playbtn_audio.show()
@@ -249,6 +260,10 @@ class GraphicalInterface(QMainWindow,Interface):
         elif value == 'Download':
             self.__video_reader.hide()
             self.__video_reader.hide()
+            self.__skipbtn_video.hide()
+            self.__previousbtn_video.hide()
+            self.__playbtn_video.hide()
+            self.__videotitle.hide()
 
             self.__previousbtn_audio.hide()
             self.__playbtn_audio.hide()

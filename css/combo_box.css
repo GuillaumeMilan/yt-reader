@@ -1,0 +1,6 @@
+QWidget {
+    overflow:hidden;
+    border-radius: 6px 6px 6px 6px;
+    /*box-shadow: 1px 1px 11px #330033;*/
+    background: #e6e6fa;
+}
