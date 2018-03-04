@@ -258,6 +258,8 @@ class GraphicalInterface(QMainWindow,Interface):
             self.__playlist_time.hide()
 
         elif value == 'Download':
+# This is a quick fix TODO rewrite mouse press event Plop Glob
+            self.__video_player.set_mode('Audio')
             self.__video_reader.hide()
             self.__video_reader.hide()
             self.__skipbtn_video.hide()
