@@ -7,6 +7,7 @@ import sys
 import string
 from progress_bar import DownloadProgress
 from quality_lib import get_audio_url, get_audio_extension, get_video_url, get_video_extension
+from thread_lib import Threader 
 
 valids_chars_in_file = "-_.() %s%s" % (string.ascii_letters, string.digits)
 
@@ -51,6 +52,98 @@ def print_video_info(video):
     print("Audio streams:")
     stream_list = [i.quality+" "+i.extension for i in video.audiostreams]
     print(stream_list)
+
+def download_video(url, mode, qual, unwanted_type):
+    """ 
+################################################################################
+#DESCRIPTION:
+#    @param url: url of the video "youtube.com/..."
+#    @param mode: Video or Audio
+#    @param qual: Quality of the video 
+#    @param unwanted_type: list of all type that we shouldn't download
+################################################################################
+    """
+
+    video = pafy.new(url)
+    passed = False
+    while not passed:
+        if mode == 'Video':
+            file_link = get_video_url(video.streams, qual, unwanted_type)
+            file_extension = get_video_extension(video.streams, local_qual, unwanted_type)
+        elif local_mode == 'Audio':
+            file_link = get_audio_url(video.audiostreams, qual, unwanted_type)
+            file_extension = get_audio_extension(video.audiostreams, qual, unwanted_type)
+        passed = file_link != "" and file_extension != ""
+        failed = False
+        if not passed : 
+            print("We didn't found a video corresponding to your requirement!")
+            print("Do you want to skip?(y/n)")
+            command = input()
+            if command == "y" :
+                passed = True
+                failed = True
+            else :
+                print("Current parameters: "+local_mode+", "+local_qual)
+                print_video_info(video)
+                print("Set your new parameter: ")
+                command = input()
+                command = command.split(" ")
+                print(command)
+                for i in command:
+                    (local_mode, local_qual) = parse_param(i, local_mode, local_qual)
+
+    print("----------")
+    print("Downloading "+video.title)
+    if not failed:
+        try:
+            target_file = video.title+"."+file_extension
+            target_file = ''.join(c for c in target_file if c in valids_chars_in_file)
+            output = wget.download(file_link, out=destination_folder+target_file, bar=None)
+            print("----------")
+        except (IOError):
+            print("Unable to open the file: "+target_file)
+    else :
+        print("Aborted!")
+        print(video.watchv_url)
+        print("----------")
+
+
+def dowload_list(video_list, options):
+    """ 
+################################################################################
+#DESCRIPTION:
+#    @param video_list: list of the videos (+ qual + mode)
+#    @param options: contain all the unwanted extension + default qual and mode
+#    This function objective is to download all the videos in the video_list 
+#    This function will replace all the other dowload function in the next 
+#    version of the software
+################################################################################
+    """
+    default_mode = 'Video'
+    default_qual = 'Best'
+    unwanted_type = []
+    if 'Audio' in options:
+        default_mode = 'Audio'
+    if "--nowebm" in options:
+        unwanted_type.append("webm")
+    if "--no3gp" in options:
+        unwanted_type.append("3gp")
+    if "--nom4a" in options:
+        unwanted_type.append("m4a")
+    if "--nomp4" in options:
+        unwanted_type.append("mp4")
+
+    for video in video_list: 
+        local_mode = default_mode
+        local_qual = default_qual
+        for i in video[1:]:
+            if i == 'Audio':
+                local_mode = 'Audio'
+            elif i == 'Video':
+                local_mode = 'Video'
+            else:
+                local_qual = i
+        download_video(video[0], local_mode, local_qual, unwanted_type)
 
 def download(fname,mode='Video'):
     try:
