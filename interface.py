@@ -44,6 +44,10 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__skipbtn_image = None
         self.__playbtn_image = None
         self.__pausebtn_image = None
+# List containing all the Widget of an interface
+        self.__videowidgets = []
+        self.__audiowidgets = []
+        self.__downloadwidgets = []
 # List of all the QWidget present in the main window 
         self.__videotitle = None
         self.__searchbtn = None
@@ -153,11 +157,13 @@ class GraphicalInterface(QMainWindow,Interface):
                                QColor(0,0,0))
         self.__video_reader.setPalette(self.__palette)
         self.__video_reader.setAutoFillBackground(True)
-
+        self.__videowidgets.append(self.__video_reader)
         self.__gr_video_reader = GraphicalObject(self.__video_reader, width = 80, height = 80, pos_x = 10, pos_y = 10, parent = self.__body)
 
         self.__videotitle = QLabel("No Video!", self)
         self.__videotitle.setWordWrap(True)
+        self.__videowidgets.append(self.__videotitle)
+        self.__audiowidgets.append(self.__videotitle)
         self.__gr_videotitle = GraphicalObject(self.__videotitle, width = 80, height = 10, pos_x = 10, pos_y = 90, parent = self.__body)
         
 
@@ -174,12 +180,14 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__previousbtn_image = QPixmap('resources/back.svg')
         self.__previousbtn_video.setScaledContents(True)
         self.__previousbtn_video.setPixmap(self.__previousbtn_image)
+        self.__videowidgets.append(self.__previousbtn_video)
         self.__gr_previousbtn_video = GraphicalObject(self.__previousbtn_video, width = btn_width, height = btn_height, pos_x = ui_origin_x+0*btn_width, pos_y = ui_origin_y, parent = self.__gr_video_reader)
 
         self.__skipbtn_video = TranslucidButton(self)
         self.__skipbtn_image = QPixmap('resources/skip.svg')
         self.__skipbtn_video.setScaledContents(True)
         self.__skipbtn_video.setPixmap(self.__skipbtn_image)
+        self.__videowidgets.append(self.__skipbtn_video)
         self.__gr_skipbtn_video = GraphicalObject(self.__skipbtn_video, width = btn_width, height = btn_height, pos_x = ui_origin_x+2*btn_width, pos_y = ui_origin_y, parent = self.__gr_video_reader)
 
         self.__playbtn_video = TranslucidButton(self)
@@ -187,6 +195,7 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__playbtn_image = QPixmap('resources/play.svg')
         self.__playbtn_video.setScaledContents(True)
         self.__playbtn_video.setPixmap(self.__playbtn_image)
+        self.__videowidgets.append(self.__playbtn_video)
         self.__gr_playbtn_video = GraphicalObject(self.__playbtn_video, width = btn_width, height = btn_height, pos_x = ui_origin_x+1*btn_width, pos_y = ui_origin_y, parent = self.__gr_video_reader)
 
         # Audio UI 
@@ -197,24 +206,29 @@ class GraphicalInterface(QMainWindow,Interface):
         ui_origin_y = 50 - (btn_height/2)
 
         self.__previousbtn_audio = QPushButton('Previous', self)
+        self.__audiowidgets.append(self.__previousbtn_audio)
         #clicked.connect(self.handle_research)
         self.__gr_previousbtn_audio = GraphicalObject(self.__previousbtn_audio, width = btn_width, height = btn_height, pos_x = ui_origin_x+(0*(100-2*ui_origin_x))/number_of_button, pos_y = ui_origin_y, parent = self.__body)
 
         self.__playbtn_audio = QPushButton('Play', self)
         self.__playbtn_audio.clicked.connect(self.audio_play_pause)
+        self.__audiowidgets.append(self.__playbtn_audio)
         self.__gr_playbtn_audio = GraphicalObject(self.__playbtn_audio, width = btn_width, height = btn_height, pos_x = ui_origin_x+(1*(100-2*ui_origin_x))/number_of_button, pos_y = ui_origin_y, parent = self.__body)
 
         self.__skipbtn_audio = QPushButton('Skip', self)
         self.__skipbtn_audio.clicked.connect(self.__video_player.skip)
+        self.__audiowidgets.append(self.__skipbtn_audio)
         self.__gr_skipbtn_audio = GraphicalObject(self.__skipbtn_audio, width = btn_width, height = btn_height, pos_x = ui_origin_x+(2*(100-2*ui_origin_x))/number_of_button, pos_y = ui_origin_y, parent = self.__body)
 
 # Need to be put before drop area to link it 
         self.__playlist_time = QLabel("0", self)
+        self.__downloadwidgets.append(self.__playlist_time)
 
         self.__drop_area = VideoDropLabel('Drop Here!', self, self.__playlist_time)
 
         drop_area_css = read_css("./css/drop_area.css")
         self.__drop_area.setStyleSheet(drop_area_css)
+        self.__downloadwidgets.append(self.__drop_area)
         self.__gr_drop_area = GraphicalObject(self.__drop_area, width = 80, height = 30, pos_x = 10, pos_y = 25, parent = self.__body)
 
 # End of the playlist time label definition
@@ -228,53 +242,33 @@ class GraphicalInterface(QMainWindow,Interface):
     def set_player_mode(self, value):
         if value == 'Video':
             self.__video_player.set_mode(value)
-            self.__video_reader.show()
-            self.__skipbtn_video.show()
-            self.__previousbtn_video.show()
-            self.__playbtn_video.show()
-            self.__videotitle.show()
+            for i in self.__audiowidgets:
+                i.hide()
+            for i in self.__downloadwidgets:
+                i.hide()
+            for i in self.__videowidgets:
+                i.show()
             
-
-            self.__previousbtn_audio.hide()
-            self.__playbtn_audio.hide()
-            self.__skipbtn_audio.hide()
-
-            self.__drop_area.hide()
-            self.__playlist_time.hide()
-
         elif value == 'Audio':
             self.__video_player.set_mode(value)
-            self.__video_reader.hide()
-            self.__skipbtn_video.hide()
-            self.__previousbtn_video.hide()
-            self.__playbtn_video.hide()
-            self.__videotitle.show()
-
-            self.__previousbtn_audio.show()
-            self.__playbtn_audio.show()
-            self.__skipbtn_audio.show()
-
-            self.__drop_area.hide()
-            self.__playlist_time.hide()
+            for i in self.__downloadwidgets:
+                i.hide()
+            for i in self.__videowidgets:
+                i.hide()
+            for i in self.__audiowidgets:
+                i.show()
 
         elif value == 'Download':
 # This is a quick fix TODO rewrite mouse press event Plop Glob
             self.__video_player.set_mode('Audio')
-            self.__video_reader.hide()
-            self.__video_reader.hide()
-            self.__skipbtn_video.hide()
-            self.__previousbtn_video.hide()
-            self.__playbtn_video.hide()
-            self.__videotitle.hide()
+            for i in self.__videowidgets:
+                i.hide()
+            for i in self.__audiowidgets:
+                i.hide()
+            for i in self.__downloadwidgets:
+                i.show()
 
-            self.__previousbtn_audio.hide()
-            self.__playbtn_audio.hide()
-            self.__skipbtn_audio.hide()
-
-            self.__playlist_time.show()
-            self.__drop_area.show()
-
-
+            
     def end_of_play_list(self):
         print("End of stream")
         self.__palette.setColor (QPalette.Window,
