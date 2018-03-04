@@ -3,6 +3,10 @@ from read_video import VideoPlayer
 from interface import CommandLineInterface
 from interface import GraphicalInterface
 import sys
+import settings
+
+settings.init()
+
 content = []
 try:
     with open(".config") as config:
@@ -25,3 +29,6 @@ my_player.set_mode(content[1][:-1])
 my_player.set_interface(my_interface)
 my_interface.main()
 my_player.join()
+# Quit all the function currently threaded 
+for i in settings.thread_list:
+    i.quit()

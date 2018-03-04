@@ -1,5 +1,10 @@
 from threading import Thread
 from threading import Event 
+import settings
+
+
+class Threader(Thread):
+    """
 ################################################################################
 # DESCRIPTION:
 # This class allow you to thread multiple operations called instruction
@@ -12,14 +17,15 @@ from threading import Event
 #    2 - long_func(param)
 #    3 - end_func(param)
 ################################################################################
+    """
 
-
-class Threader(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.__instructions = []
         self.__is_running = False
         self.__pause = Event()
+        self.__quit = False
+        settings.thread_list.append(self)
 
     def addInstruction(self, instruction):
         self.__instructions.append(instruction)
@@ -34,6 +40,10 @@ class Threader(Thread):
     def isRunning(self):
         return self.__is_running
 
+    def quit(self):
+        self.__quit = True
+        self.__pause.set()
+
     def __exec(self, inst):
         inst[1](inst[3])
 # This is a trick to update correctly the instruction
@@ -42,7 +52,7 @@ class Threader(Thread):
 
     def run(self):
         self.__pause.clear()
-        while (1):
+        while (not quit):
             while(len(self.__instructions) != 0):
                 self.__is_running = True
                 instruction = self.__instructions.pop(0)
