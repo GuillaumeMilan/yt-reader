@@ -26,6 +26,7 @@ def format_time(time):
 
 def update_duration(param):
     # param = [[duration], url]
+    print("Im getting executed")
     video = pafy.new(param[1])
     param[0][0] = param[0][0] + video.length
 
@@ -58,7 +59,7 @@ class VideoDropLabel(QLabel):
         self.__video_list.append([e.mimeData().text()])
         self.__threader.addInstruction([update_duration, void, self.updateTimeLabel, None, [self.__duration, self.__video_list[-1][0]], self.__duration])
         print("New list element: "+self.__video_list[-1][0])
-        print("New durantion :"+str(self.__duration))
+        print("New duration :"+str(self.__duration))
 
     def connect(self, function):
         self.__event_function = function
@@ -86,4 +87,17 @@ class VideoDropLabel(QLabel):
 ################################################################################
         """
         download_list(self.__video_list, ['Video', 'Best'])
+
+    def save(self):
+        """
+################################################################################
+# DESCRIPTION:
+#   This function is used to save the playlist in a file for a future download
+#   or for a future watch 
+#   TODO
+################################################################################
+        """
+        pass
+ 
+
 

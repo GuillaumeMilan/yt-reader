@@ -243,8 +243,12 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__start_download = QPushButton('Download', self)
         self.__start_download.clicked.connect(self.__drop_area.download)
         self.__downloadwidgets.append(self.__start_download)
-        self.__gr_start_download = GraphicalObject(self.__start_download, width = 20, height = 10, pos_x = 40, pos_y = 80, parent = self.__body)
-
+        self.__gr_start_download = GraphicalObject(self.__start_download, width = 20, height = 10, pos_x = 55, pos_y = 80, parent = self.__body)
+        
+        self.__save_download = QPushButton('Save', self)
+        self.__save_download.clicked.connect(self.__drop_area.save)
+        self.__downloadwidgets.append(self.__save_download)
+        self.__gr_save_download = GraphicalObject(self.__save_download, width = 20, height = 10, pos_x = 25, pos_y = 80, parent = self.__body)
 
 
 
