@@ -26,7 +26,6 @@ def format_time(time):
 
 def update_duration(param):
     # param = [[duration], url]
-    print("Im getting executed")
     video = pafy.new(param[1])
     param[0][0] = param[0][0] + video.length
 

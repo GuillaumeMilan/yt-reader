@@ -52,7 +52,7 @@ class Threader(Thread):
 
     def run(self):
         self.__pause.clear()
-        while (not quit):
+        while (not self.__quit):
             while(len(self.__instructions) != 0):
                 self.__is_running = True
                 instruction = self.__instructions.pop(0)
