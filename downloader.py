@@ -61,15 +61,16 @@ def download_video(url, mode, qual, unwanted_type):
 #    @param mode: Video or Audio
 #    @param qual: Quality of the video 
 #    @param unwanted_type: list of all type that we shouldn't download
+#    TODO destination folder 
 ################################################################################
     """
-
+    destination_folder = "downloads"
     video = pafy.new(url)
     passed = False
     while not passed:
         if mode == 'Video':
             file_link = get_video_url(video.streams, qual, unwanted_type)
-            file_extension = get_video_extension(video.streams, local_qual, unwanted_type)
+            file_extension = get_video_extension(video.streams, qual, unwanted_type)
         elif local_mode == 'Audio':
             file_link = get_audio_url(video.audiostreams, qual, unwanted_type)
             file_extension = get_audio_extension(video.audiostreams, qual, unwanted_type)
@@ -90,7 +91,7 @@ def download_video(url, mode, qual, unwanted_type):
                 command = command.split(" ")
                 print(command)
                 for i in command:
-                    (local_mode, local_qual) = parse_param(i, local_mode, local_qual)
+                    (mode, qual) = parse_param(i, mode, qual)
 
     print("----------")
     print("Downloading "+video.title)
@@ -108,10 +109,10 @@ def download_video(url, mode, qual, unwanted_type):
         print("----------")
 
 
-def dowload_list(video_list, options):
+def download_list(video_list, options):
     """ 
 ################################################################################
-#DESCRIPTION:
+# DESCRIPTION:
 #    @param video_list: list of the videos (+ qual + mode)
 #    @param options: contain all the unwanted extension + default qual and mode
 #    This function objective is to download all the videos in the video_list 

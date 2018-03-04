@@ -1,8 +1,15 @@
 from PyQt5.QtWidgets import QLabel
 from thread_lib import Threader
 import pafy
+from downloader import download_list
 
 def void(none):
+    """
+################################################################################
+#DESCRIPTION: 
+#   This function is used initialize variable function to nothing
+################################################################################
+    """
     pass
 
 def two_digit(value):
@@ -69,3 +76,14 @@ class VideoDropLabel(QLabel):
             video = pafy.new(i[0])
             duration += video.length
         return duration
+
+    def download(self):
+        """
+################################################################################
+# DESCRIPTION:
+#   This function is used to download all the video in the list of the class
+#   TODO
+################################################################################
+        """
+        download_list(self.__video_list, ['Video', 'Best'])
+

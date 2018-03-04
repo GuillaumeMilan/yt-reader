@@ -65,6 +65,7 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__buttonbar_video = None
         self.__drop_area = None
         self.__playlist_time = None
+        self.__start_download = None
 # List of all the GraphicalObject in the main window 
         self.__header = None
         self.__footer = None
@@ -85,6 +86,7 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__gr_skipbtn_video = None
         self.__gr_drop_area = None
         self.__gr_playlist_time = None
+        self.__gr_start_download = None
 
         self.__object_list = []
 
@@ -237,6 +239,13 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__playlist_time.setStyleSheet(playlist_time_css)
         self.__gr_playlist_time = GraphicalObject(self.__playlist_time, width = 60, height = 40, pos_x = 40, pos_y = 0, parent = self.__gr_drop_area)
         self.__playlist_time.raise_()
+
+        self.__start_download = QPushButton('Download', self)
+        self.__start_download.clicked.connect(self.__drop_area.download)
+        self.__downloadwidgets.append(self.__start_download)
+        self.__gr_start_download = GraphicalObject(self.__start_download, width = 20, height = 10, pos_x = 40, pos_y = 80, parent = self.__body)
+
+
 
 
     def set_player_mode(self, value):
