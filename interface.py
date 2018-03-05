@@ -13,21 +13,66 @@ import random
 import string
 
 def read_css(fname):
+    """
+################################################################################
+# DESCRIPTION:
+#    @param fname: name of the file containing the css  
+#    @return string containing the content of the file
+# This function goal is to return the css content of a file to edit the style
+# of your PyQt object
+################################################################################
+    """
     with open(fname) as f:
         content = f.read()
     return content
 
 class Interface:
+    """
+################################################################################
+# DESCRIPTION: 
+#    @class reference to construct an interface for the yt_reader app
+################################################################################
+    """
     def end_of_play_list(self):
+        """
+################################################################################
+# DESCRIPTION:
+#    This method notify to the interface that the playlist just finished
+#    This method is call by the VideoPlayer
+################################################################################
+        """
         pass 
 
     def update_title(self,title):
+        """
+################################################################################
+# DESCRIPTION: 
+#    This method notify to the interface the title of the new video playing
+#    This method is to be used to update the interface video title
+################################################################################
+        """
         print("----------")
         print(title)
         print("----------")
 
 class GraphicalInterface(QMainWindow,Interface):
+    """
+################################################################################
+# DESCRIPTION: 
+#    @class which will create a GUI for the VideoReader and the download
+################################################################################
+    """
     def __init__(self, video_player, debug = False):
+        """
+################################################################################
+# DESCRIPTION: 
+#    @class GraphicalInterface initialisation need:
+#       @depends Interface
+        @depends QMainWindow
+#       @param VideoPlayer that will communicate with the interface
+#       @param debug ... No explaination
+################################################################################
+        """
         self.__app = QApplication(sys.argv)
         super().__init__()
         self.__video_player = video_player
@@ -93,8 +138,12 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__debug = debug
         
     def main(self):
-        """ 
-        Main loop of the graphic interface
+        """
+################################################################################
+# DESCRIPTION: 
+#       Main loop of the graphic interface
+#       @use self.create_reader to create the body 
+################################################################################
         """
         self.resize(640, 480)
         self.move(0, 0)
@@ -139,6 +188,13 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__video_player.stop_stream()
 
     def handle_research(self):
+        """
+################################################################################
+# DESCRIPTION: 
+#    This function is an intern function of the class to search for the video 
+#    TODO: Change it to private 
+################################################################################
+        """
         my_string = self.__searchbar.text()
         self.__searchbar.clear()
         if "www.youtube.com/" in my_string:
@@ -147,6 +203,13 @@ class GraphicalInterface(QMainWindow,Interface):
             print("Search functionnality not implemented yet. Put url please!")
         
     def create_reader(self):
+        """
+################################################################################
+# DESCRIPTION: 
+#    This function create the body of the interface
+#    TODO put it in private 
+################################################################################
+        """
         # code from github.com/devos50/vlc-pyqt5-example.git
         # Video UI
         if sys.platform == "darwin" :
@@ -253,6 +316,14 @@ class GraphicalInterface(QMainWindow,Interface):
 
 
     def set_player_mode(self, value):
+        """
+################################################################################
+# DESCRIPTION: 
+#    This function is used to change the mode of the VideoReader @class 
+#    This funtion is private and called on interface changing mode
+#    TODO privatize + use it when in download mode 
+################################################################################
+        """
         if value == 'Video':
             self.__video_player.set_mode(value)
             for i in self.__audiowidgets:
@@ -283,15 +354,36 @@ class GraphicalInterface(QMainWindow,Interface):
 
             
     def end_of_play_list(self):
+        """
+################################################################################
+# DESCRIPTION: 
+#    @Override This class handle the end playlist event raise by the 
+#    VideoReader @class
+################################################################################
+"""
         print("End of stream")
         self.__palette.setColor (QPalette.Window,
                                QColor(0,0,0))
         self.__video_reader.setPalette(self.__palette)
 
     def update_title(self, title):
+        """
+################################################################################
+# DESCRIPTION: 
+#    @param title: change the video title of the interface with the param
+#    TODO privatize 
+################################################################################
+        """
         self.__videotitle.setText(title)
 
     def audio_play_pause(self):
+        """
+################################################################################
+# DESCRIPTION: 
+#    This function objective is to swap pause and play for the VideoReader
+#    TODO privatize + put in template
+################################################################################
+        """
         if self.__video_player.is_running():
             self.pause_start()
         else:
@@ -299,6 +391,14 @@ class GraphicalInterface(QMainWindow,Interface):
             self.__video_player.play_stream()
 
     def video_play_pause(self):
+        """
+################################################################################
+# DESCRIPTION: 
+#    This function is used to swap play pause of the VideoReader and modify the
+#    interface in consequence
+#    TODO privatize ?
+################################################################################
+        """
         print("Play pause")
         if self.__video_player.is_running():
             self.pause_start()
@@ -321,6 +421,13 @@ class GraphicalInterface(QMainWindow,Interface):
 
 
     def pause_start(self):
+        """
+################################################################################
+# DESCRIPTION: 
+#    Function to be called to update the VideoReader status 
+#    TODO privatize?
+################################################################################
+        """
         if self.__video_player.is_paused(): 
             print("Unpausing the player")
             self.__playbtn_audio.setText('Pause')
@@ -337,6 +444,14 @@ class GraphicalInterface(QMainWindow,Interface):
 # Redefinition of the QMainWindow built-in methods
 
     def mousePressEvent(self, event):
+        """
+################################################################################
+# DESCRIPTION: 
+#    @Override from QMainWindow 
+#       Handle the click event and verify if it is on the player 
+#    TODO Clarifiy the code and scalable
+################################################################################
+        """
         # Left click 
         if event.button() == 1:
             if ((event.x() <= (self.__gr_video_reader.getRealWidth()+self.__gr_video_reader.getRealPosX())) and 
@@ -369,6 +484,13 @@ class GraphicalInterface(QMainWindow,Interface):
         print("Glob X "+str(event.globalX())+" Glob Y "+str(event.globalY()))
         
     def resizeEvent (self, event):
+        """
+################################################################################
+# DESCRIPTION: 
+#    @Override from QMainWindow 
+#    This method is called to scale all the content of the window
+################################################################################
+        """
         print("OLD height: " + str(event.oldSize().height())+ " width: " + str(event.oldSize().width()))
         print("NEW height: " + str(event.size().height())+ " width: " + str(event.oldSize().width()))
         self.__width = event.size().width()
@@ -377,10 +499,22 @@ class GraphicalInterface(QMainWindow,Interface):
 
 
 class CommandLineInterface(Interface):
-    """ 
-        This class provide a command line interface for the music player
+    """
+################################################################################
+# DESCRIPTION: 
+#    This @class provide a command line interface for the music player
+################################################################################
     """
     def __init__(self, video_player, debug=False): 
+        """
+################################################################################
+# DESCRIPTION: 
+#    @class CommandLineInterface initialisation need:
+#       @depends Interface
+#       @param VideoPlayer that will communicate with the interface
+#       @param debug ... No explaination
+################################################################################
+        """
 #define the currently playing video url 
         self.__url = "" 
 #define the player to use for this interface 
@@ -391,12 +525,30 @@ class CommandLineInterface(Interface):
         self.__continue = True
 
     def set_next_music(self): 
+        """
+################################################################################
+# DESCRIPTION: 
+#    TODO verify the use 
+################################################################################
+        """
         self.__video_player.skip()
 
     def get_current_music(self): 
+        """
+################################################################################
+# DESCRIPTION: 
+#    print the url of the current playing music 
+################################################################################
+        """
         print(self.__url)
 
     def __crypt(self):
+        """
+################################################################################
+# DESCRIPTION: 
+#    Clear your terminal with random char (fun.exe)
+################################################################################
+        """
         rand_str = lambda n: ''.join([random.choice(string.ascii_letters+string.punctuation+string.digits) for i in range(n)])
         rows, columns = os.popen('stty size', 'r').read().split()
         print("")
@@ -406,6 +558,14 @@ class CommandLineInterface(Interface):
             print(s)
 
     def main(self): 
+        """
+################################################################################
+# DESCRIPTION: 
+#    This is the main loop of the interface (can be called in a Thread)
+#    This function provide the command ask loop of the interface to provide the
+#    more terminal like behave
+################################################################################
+        """
         sys.stdout.write(">>>")
         while self.__continue : 
             command = input()
