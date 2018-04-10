@@ -197,8 +197,11 @@ class GraphicalInterface(QMainWindow,Interface):
         """
         my_string = self.__searchbar.text()
         self.__searchbar.clear()
-        if "www.youtube.com/" in my_string:
-            self.__video_player.add_url(my_string)
+        self.__add_to_player(my_string)
+
+    def __add_to_player(self,url):
+        if "www.youtube.com/" in url:
+            self.__video_player.add_url(url)
         else:
             print("Search functionnality not implemented yet. Put url please!")
         

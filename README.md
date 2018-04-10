@@ -62,3 +62,11 @@ Alpha | Player available | Nov. 1 2017
 Pre Beta | Youtube navigator available | Nov. 15 2017
 Beta | Introdution of playlist  | Nov. 25 2017
 Realease | Audio player and navigator fully available | Dec. 24 2017
+
+
+# Known bug 
+
+## Player unable to display video and open it
+
+**Symptoms:** Some times, you may be unable to watch the video. All seems to go well, but if you start the video, the screen stays white. This error, might be due of the python-vlc lib. 
+**Correction:**For the moment the best way is to open the video in VLC and accept the certificate for ever. I am working on an automatic fix.
