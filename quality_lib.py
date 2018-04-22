@@ -1,5 +1,15 @@
 
 def get_audio_url(streams, quality, unwanted_extension = ["webm"]):
+    """ 
+################################################################################
+# DESCRIPTION: 
+#    @param streams: list of stream of the audio
+#    @param quality: wanted quality 
+#    @param unwanted_extension: file extension not wanted as return 
+# This function return the audio stream that correspond to the requested quality
+# This function return a empty string if no stream correspond
+################################################################################
+    """
     stream = streams
     for i in unwanted_extension:
         stream = [s for s in stream if i not in s.extension]
@@ -25,6 +35,16 @@ def get_audio_url(streams, quality, unwanted_extension = ["webm"]):
         return ""
 
 def get_video_url(streams, quality, unwanted_extension = ["webm","3gp"]):
+    """ 
+################################################################################
+# DESCRIPTION: 
+#    @param streams: list of stream of the video
+#    @param quality: wanted quality 
+#    @param unwanted_extension: file extension not wanted as return 
+# This function return the video stream that correspond to the requested quality
+# This function return a empty string if no stream correspond
+################################################################################
+    """
     stream = streams
     for i in unwanted_extension:
         stream = [s for s in stream if i not in s.extension]
@@ -50,6 +70,16 @@ def get_video_url(streams, quality, unwanted_extension = ["webm","3gp"]):
         return ""
 
 def get_audio_extension(streams, quality, unwanted_extension = ["webm"]):
+    """ 
+################################################################################
+# DESCRIPTION: 
+#    @param streams: list of stream of the audio
+#    @param quality: wanted quality 
+#    @param unwanted_extension: file extension not wanted as return 
+# This function return the extension of the returned stream by get_audio_url
+# This function return a empty string if no stream correspond
+################################################################################
+    """
     stream = streams
     for i in unwanted_extension:
         stream = [s for s in stream if i not in s.extension]
@@ -75,6 +105,16 @@ def get_audio_extension(streams, quality, unwanted_extension = ["webm"]):
         return ""
 
 def get_video_extension(streams, quality, unwanted_extension = ["webm","3gp"]):
+    """ 
+################################################################################
+# DESCRIPTION: 
+#    @param streams: list of stream of the video
+#    @param quality: wanted quality 
+#    @param unwanted_extension: file extension not wanted as return 
+# This function return the extension of the returned stream by get_video_url
+# This function return a empty string if no stream correspond
+################################################################################
+    """
     stream = streams
     for i in unwanted_extension:
         stream = [s for s in stream if i not in s.extension]
