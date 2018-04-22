@@ -317,6 +317,7 @@ class GraphicalInterface(QMainWindow,Interface):
         self.__save_download.clicked.connect(self.__drop_area.save)
         self.__downloadwidgets.append(self.__save_download)
         self.__gr_save_download = GraphicalObject(self.__save_download, width = 20, height = 10, pos_x = 25, pos_y = 90, parent = self.__body)
+        self.__drop_area.setSaveButton(self.__save_download)
 
 # --TODO-- put all the thumb in a list
         url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAACoCAMAAABt9SM9AAAAP1BMVEX8/Pz9/f38/Pr8/P75+fn29vbv7+/y8vL9/f/y8vT8+v39//+LjZn6/f/u8Prr7va9v8vi4uLT09Pp6ene3uCVnvR7AAACrElEQVR4nO3djXLiIBSGYU5zEm3cn3bt/V/rBki0zu42h8gKkfeZTtOZaorfwBHQGucsZHjvxYmYbny5062k++6ZqE4PNvHxthpW6FSqpVuxF75rEZaJxEFVuhk7of6LsGwI6wajLEVIixpuRN9KQFZmsV8xDC3iNIpJug09Kwk1K48pRwnLQ6yTuJlFWEYSehdsmLMmmMLiudJq6lh96Tbsgx+BoofSzSjNVIjmcqXhKVFce69BzGyFKGajgwqFflUISw+/hiY71JVtTRjGX3/u285K42TTEMFSqRrejO910q9MCuZy7utb0z3Lr5D783k1rXDDeGw3r7DnNwyrRUun8apzz2p26hA09Lg7z//wEpRuTt0IK8GSlYtxFW1L9S5REda6T2H5uIq1Y38Iq6C6plOhLZrjpZN4psx7v9VNPmNz7t0qEkl+9/XuhJ4Qtm23ZjWXqbgQOXYrt05SWfZ+2KjqPSvUzzX9/4RVU2bXnY9NrZonV6FndpI7LNV6Brdfy1+qzbZWXWaiosMwPnNY8V89Dr0fiBv3IK9LwtePj9fsYeU83738Nm1/Puj2p8IlLAlhZekFFdYqdy3qOZrlN4gz9YRaw8p4qu1l749z3RyeUM7N3qcPK6eqw8rUqmzvN6s5rEyVK9+it+Kwcj3G6nYIAAAAAAAAUJWcLxE8PeHDblL4l5F70rKhZ6Vh39smvmGPsMxIyii+CY2aBQAAAAAAAAAAAAAAAAAAAAAAAAAPJ/PnZ5duxz5o+IDw0q3YDXFrl/nDTMO1EfhHSxtxmvsyLM9quSwkLEgKAAAAAAAAAAAAAAAAAAAAwEYi8qDLesnj/lS6cQwHGcdOtDv941aEFcSwXnxY7nT6sTT2r9yXv23AOC7Hozt9fyOsr/iwjlMO4/RNfn77DUdfCIhnVMkqAAAAAElFTkSuQmCC'

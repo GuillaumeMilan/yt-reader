@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QLabel
+from PyQt5.QtGui import QPalette, QColor
 from thread_lib import Threader
 import pafy
 from downloader import download_list
@@ -44,12 +45,22 @@ class VideoDropLabel(QLabel):
         self.__threader = Threader()
         self.__threader.start()
         self.__time_label = time_label
+        self.__push_button = None
         self.updateTimeLabel(None)
         self.__thumbwidget = None
     
     def updateTimeLabel(self, none):
         if self.__time_label != None:
             self.__time_label.setText("Playlist duration: "+format_time(self.__duration[0]))
+        if self.__push_button != None and len(self.__video_list) == len(self.__video_list_title): 
+            palette = self.__push_button.palette()
+            palette.setColor(QPalette.Button,                               
+                    QColor(255,255,255))
+            self.__push_button.setAutoFillBackground(True)
+            self.__push_button.setFlat(False)
+            self.__push_button.setPalette(palette)
+            self.__push_button.update()
+
 
     def dragEnterEvent(self, e):
         if e.mimeData().hasFormat('text/plain'):
@@ -103,6 +114,14 @@ class VideoDropLabel(QLabel):
         """
         if len(self.__video_list) != len(self.__video_list_title):
             print("Wait loading all video")
+            palette = self.__push_button.palette()
+            palette.setColor(QPalette.Button,
+                    QColor(255,0,0))
+            self.__push_button.setAutoFillBackground(True)
+            self.__push_button.setFlat(True)
+            self.__push_button.setPalette(palette)
+            self.__push_button.update()
+            
             return 
         with open('downloads/save.yt', 'w') as out:
 #--TODO-- create download option
@@ -121,4 +140,12 @@ class VideoDropLabel(QLabel):
 ################################################################################
         """
         self.__thumbwidget = thumbwidget
-
+    
+    def setSaveButton(self, pushbutton):
+        """
+################################################################################
+# DESCRIPTION:
+#   This function is used to link the button to save for feed back
+################################################################################
+        """
+        self.__push_button = pushbutton
