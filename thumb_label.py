@@ -14,6 +14,7 @@ class ThumbLabel(QLabel):
         tmp_image = QImage()
         tmp_image.loadFromData(data)
         self.__thumb = QPixmap(tmp_image)
+        self.setPixmap(self.__thumb.scaled(self.width(), self.height(), Qt.KeepAspectRatio))
 
     def resize(self, w, h):
         super().resize(w, h)

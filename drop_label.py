@@ -25,9 +25,11 @@ def format_time(time):
         return str(int((time % 3600)/60))+":"+two_digit(time % 60)
 
 def update_duration(param):
-    # param = [[duration], url]
-    video = pafy.new(param[1])
+    # param = [[duration], thumblabel, url]
+    video = pafy.new(param[2])
     param[0][0] = param[0][0] + video.length
+    if param[1] != None:
+        param[1].setUrl(video.bigthumb)
 
 class VideoDropLabel(QLabel):
 
@@ -41,6 +43,7 @@ class VideoDropLabel(QLabel):
         self.__threader.start()
         self.__time_label = time_label
         self.updateTimeLabel(None)
+        self.__thumbwidget = None
     
     def updateTimeLabel(self, none):
         if self.__time_label != None:
@@ -56,7 +59,7 @@ class VideoDropLabel(QLabel):
         self.setText(e.mimeData().text())
         self.__event_function(None)
         self.__video_list.append([e.mimeData().text()])
-        self.__threader.addInstruction([update_duration, void, self.updateTimeLabel, None, [self.__duration, self.__video_list[-1][0]], self.__duration])
+        self.__threader.addInstruction([update_duration, void, self.updateTimeLabel, None, [self.__duration, self.__thumbwidget, self.__video_list[-1][0]], self.__duration])
         print("New list element: "+self.__video_list[-1][0])
         print("New duration :"+str(self.__duration))
 
@@ -98,5 +101,12 @@ class VideoDropLabel(QLabel):
         """
         pass
  
-
+    def setThumbWidget(self, thumbwidget):
+        """
+################################################################################
+# DESCRIPTION:
+#   This function is used to set the thumbnail widget for the interface
+################################################################################
+        """
+        self.__thumbwidget = thumbwidget
 
