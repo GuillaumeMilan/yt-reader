@@ -25,11 +25,12 @@ def format_time(time):
         return str(int((time % 3600)/60))+":"+two_digit(time % 60)
 
 def update_duration(param):
-    # param = [[duration], thumblabel, url]
-    video = pafy.new(param[2])
+    # param = [[duration], thumblabel, video_list_title, url]
+    video = pafy.new(param[3])
     param[0][0] = param[0][0] + video.length
     if param[1] != None:
         param[1].setUrl(video.bigthumb)
+    param[2].append(video.title)
 
 class VideoDropLabel(QLabel):
 
@@ -37,6 +38,7 @@ class VideoDropLabel(QLabel):
         super().__init__(title, parent)
         self.setAcceptDrops(True)
         self.__video_list = []
+        self.__video_list_title = []
         self.__event_function = void
         self.__duration = [0]
         self.__threader = Threader()
@@ -59,7 +61,7 @@ class VideoDropLabel(QLabel):
         self.setText(e.mimeData().text())
         self.__event_function(None)
         self.__video_list.append([e.mimeData().text()])
-        self.__threader.addInstruction([update_duration, void, self.updateTimeLabel, None, [self.__duration, self.__thumbwidget, self.__video_list[-1][0]], self.__duration])
+        self.__threader.addInstruction([update_duration, void, self.updateTimeLabel, None, [self.__duration, self.__thumbwidget, self.__video_list_title, self.__video_list[-1][0]], self.__duration])
         print("New list element: "+self.__video_list[-1][0])
         print("New duration :"+str(self.__duration))
 
@@ -99,7 +101,17 @@ class VideoDropLabel(QLabel):
 #   TODO
 ################################################################################
         """
-        pass
+        if len(self.__video_list) != len(self.__video_list_title):
+            print("Wait loading all video")
+            return 
+        with open('downloads/save.yt', 'w') as out:
+#--TODO-- create download option
+            out.write('options: --nowebm --no3gp --quality[Best] --mode[Audio] --destination[downloads/]'+'\n')
+            for i in range(len(self.__video_list)):
+                out.write("# "+self.__video_list_title[i]+'\n')
+                out.write(self.__video_list[i][0]+'\n')
+        print("Saved!")
+
  
     def setThumbWidget(self, thumbwidget):
         """
