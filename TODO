@@ -1,0 +1,18 @@
+# Make a .config file (Video ou Audio + quality)
+# replace download functions 
+# Finish download function in the GUI
+# Finish playlist saving in the GUI
+
+
+
+
+# scrollable area with playlist list of video
+
+# save dowload playlist in a file (with name ...)
+
+# Video searching like on the website
+
+
+# THREAD 
+# Thread the loading of the video while the url is given 
+# Create a progress bar for the download (wget create a new file)
