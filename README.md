@@ -56,6 +56,7 @@ In the current version the player is available in command line. And you can down
 Playlist will be added in the next patch.
 
 Version | Content | Date
+--- | --- | --- 
 Pre Alpha | Manually write link in the code | Oct. 25 2017
 Alpha | Player available | Nov. 1 2017
 Beta | Introdution of playlist  | Nov. 25 2017
