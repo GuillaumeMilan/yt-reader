@@ -51,17 +51,20 @@ Last but not least you need to install all the python dependencies for the App. 
 
 
 # Version and Features
-__Current version of the project: Alpha 1.1__ 
+__Current version of the project: Command line Released and Graphical interface in Beta__ 
 In the current version the player is available in command line. And you can download videos. 
 Playlist will be added in the next patch.
 
-Version | Expected content | Expected Date
---- | --- | --- 
+Version | Content | Date
 Pre Alpha | Manually write link in the code | Oct. 25 2017
 Alpha | Player available | Nov. 1 2017
-Pre Beta | Youtube navigator available | Nov. 15 2017
 Beta | Introdution of playlist  | Nov. 25 2017
-Realease | Audio player and navigator fully available | Dec. 24 2017
+Realease | Audio player and  downloader available in command line | Dec. 24 2017
+
+Version | Expected content | Expected Date
+--- | --- | --- 
+Beta | Introduction of the drag and drop downloader | Feb. 2018
+Realease | Audio player and navigator fully available | Dec. 2018
 
 
 # Known bug 
