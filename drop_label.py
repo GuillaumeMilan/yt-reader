@@ -27,11 +27,12 @@ def format_time(time):
 
 def update_duration(param):
     # param = [[duration], thumblabel, video_list_title, url]
-    video = pafy.new(param[3])
+    video = pafy.new(param[4])
     param[0][0] = param[0][0] + video.length
     if param[1] != None:
         param[1].setUrl(video.bigthumb)
     param[2].append(video.title)
+    param[3].append(video)
 
 class VideoDropLabel(QLabel):
 
